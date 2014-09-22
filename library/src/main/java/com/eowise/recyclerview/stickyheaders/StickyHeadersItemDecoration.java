@@ -13,10 +13,15 @@ public class StickyHeadersItemDecoration extends RecyclerView.ItemDecoration {
 
     private final StickyHeadersAdapter adapter;
     private final RecyclerView.ViewHolder headerViewHolder;
+    private HeaderPosition headerPosition;
 
     private final int itemHeight;
 
     public StickyHeadersItemDecoration(StickyHeadersAdapter adapter, RecyclerView parent) {
+        this(adapter, parent, HeaderPosition.TOP);
+    }
+
+    public StickyHeadersItemDecoration(StickyHeadersAdapter adapter, RecyclerView parent, HeaderPosition headerPosition) {
         this.adapter = adapter;
         this.headerViewHolder = adapter.onCreateViewHolder(parent);
 
@@ -56,7 +61,25 @@ public class StickyHeadersItemDecoration extends RecyclerView.ItemDecoration {
     @Override
     public void getItemOffsets(Rect outRect, int itemPosition, RecyclerView parent) {
 
-        outRect.set(0, itemHeight, 0, 0);
+        switch (headerPosition) {
+            case LEFT:
+                outRect.set(itemHeight, 0, 0, 0);
+                break;
+            case TOP:
+                outRect.set(0, itemHeight, 0, 0);
+                break;
+            case RIGHT:
+                outRect.set(0, 0, itemHeight, 0);
+                break;
+            case BOTTOM:
+                outRect.set(0, 0, 0, itemHeight);
+                break;
+            case OVERLAY:
+                outRect.set(0, 0, 0, 0);
+                break;
+        }
+
+
     }
 
 }
