@@ -1,0 +1,10 @@
+apply plugin: 'com.android.library'
+
+dependencies {
+    compile 'com.android.support:recyclerview-v7:+'
+}
+
+android {
+    compileSdkVersion 'android-L'
+    buildToolsVersion '20.0.0'
+}
