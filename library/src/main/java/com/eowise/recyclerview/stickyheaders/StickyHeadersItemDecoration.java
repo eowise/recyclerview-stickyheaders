@@ -53,7 +53,7 @@ public class StickyHeadersItemDecoration extends RecyclerView.ItemDecoration {
         for (int i = childCount - 1; i >= 0; i--) {
             final View child = parent.getChildAt(i);
             final RecyclerView.ViewHolder itemViewHolder = parent.getChildViewHolder(child);
-            currentHeaderId = getHeaderId(itemViewHolder);
+            currentHeaderId = getHeaderId(itemViewHolder, itemViewHolder.getPosition());
 
             if (i == 0 || !currentHeaderId.equals(getHeaderId(parent, i - 1))) {
 
@@ -78,7 +78,7 @@ public class StickyHeadersItemDecoration extends RecyclerView.ItemDecoration {
     @Override
     public void getItemOffsets(Rect outRect, int itemPosition, RecyclerView parent) {
 
-        if (itemPosition != 0 && getHeaderId(parent.findViewHolderForPosition(itemPosition)) == getHeaderId(parent.findViewHolderForPosition(itemPosition - 1))) {
+        if (itemPosition != 0 && getHeaderId(parent.findViewHolderForPosition(itemPosition), itemPosition) == getHeaderId(parent.findViewHolderForPosition(itemPosition - 1), itemPosition)) {
             outRect.set(0, 0, 0, 0);
         }
         else {
@@ -125,15 +125,15 @@ public class StickyHeadersItemDecoration extends RecyclerView.ItemDecoration {
         final View child = parent.getChildAt(childPosition);
         final RecyclerView.ViewHolder itemViewHolder = parent.getChildViewHolder(child);
 
-        return getHeaderId(itemViewHolder);
+        return getHeaderId(itemViewHolder, itemViewHolder.getPosition());
     }
 
-    private long getHeaderId(RecyclerView.ViewHolder itemViewHolder) {
-        if (!headersIds.containsKey(itemViewHolder.getPosition())) {
+    private long getHeaderId(RecyclerView.ViewHolder itemViewHolder, int dataSetPosition) {
+        if (!headersIds.containsKey(dataSetPosition)) {
             headersIds.put(itemViewHolder.getPosition(), adapter.getHeaderId(itemViewHolder, itemViewHolder.getPosition()));
         }
 
-        return headersIds.get(itemViewHolder.getPosition());
+        return headersIds.get(dataSetPosition);
     }
 
 }

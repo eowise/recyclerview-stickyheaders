@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="letter_header_padding">16dp</dimen>
+    <dimen name="item_padding">72dp</dimen>
+</resources>
