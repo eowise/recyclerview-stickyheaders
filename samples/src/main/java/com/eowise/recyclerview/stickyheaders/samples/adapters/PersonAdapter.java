@@ -16,7 +16,35 @@ import java.util.Comparator;
  */
 public class PersonAdapter extends RecyclerView.Adapter<PersonAdapter.ViewHolder> {
 
-    String[] items = {
+    @Override
+    public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
+        View itemView = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.list_item, viewGroup, false);
+
+        return new ViewHolder(itemView);
+
+    }
+
+    @Override
+    public void onBindViewHolder(ViewHolder viewHolder, int position) {
+        viewHolder.label.setText(items[position]);
+    }
+
+    @Override
+    public int getItemCount() {
+        return items.length;
+    }
+
+    public static class ViewHolder extends RecyclerView.ViewHolder {
+
+        TextView label;
+
+        public ViewHolder(View itemView) {
+            super(itemView);
+            label = (TextView) itemView.findViewById(R.id.name);
+        }
+    }
+
+    private String[] items = {
             "Abram Tavernia",
             "Alexa Oquin",
             "Alvin Lainez",
@@ -218,53 +246,4 @@ public class PersonAdapter extends RecyclerView.Adapter<PersonAdapter.ViewHolder
             "Yoshie Califano",
             "Yu Schilke"
     };
-
-    public PersonAdapter(Sort sort) {
-        switch (sort) {
-            case LENGTH:
-                Arrays.sort(items, new Comparator<String>() {
-                    @Override
-                    public int compare(String a, String b) {
-                        return a.length() - b.length();
-                    }
-                });
-                break;
-            case ALPHABETICAL:
-                Arrays.sort(items);
-                break;
-        }
-    }
-
-    @Override
-    public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
-        View itemView = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.list_item, viewGroup, false);
-
-        return new ViewHolder(itemView);
-
-    }
-
-    @Override
-    public void onBindViewHolder(ViewHolder viewHolder, int position) {
-        viewHolder.label.setText(items[position]);
-    }
-
-    @Override
-    public int getItemCount() {
-        return items.length;
-    }
-
-    public static class ViewHolder extends RecyclerView.ViewHolder {
-
-        TextView label;
-
-        public ViewHolder(View itemView) {
-            super(itemView);
-            label = (TextView) itemView.findViewById(R.id.name);
-        }
-    }
-
-    public static enum Sort {
-        LENGTH,
-        ALPHABETICAL
-    }
 }

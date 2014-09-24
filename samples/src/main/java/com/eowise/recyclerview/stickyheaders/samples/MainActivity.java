@@ -8,8 +8,8 @@ import android.support.v7.widget.RecyclerView;
 
 import com.eowise.recyclerview.stickyheaders.HeaderPosition;
 import com.eowise.recyclerview.stickyheaders.StickyHeadersItemDecoration;
+import com.eowise.recyclerview.stickyheaders.samples.adapters.BigramHeaderAdapter;
 import com.eowise.recyclerview.stickyheaders.samples.adapters.InitialHeaderAdapter;
-import com.eowise.recyclerview.stickyheaders.samples.adapters.LengthHeaderAdapter;
 import com.eowise.recyclerview.stickyheaders.samples.adapters.PersonAdapter;
 
 /**
@@ -30,7 +30,7 @@ public class MainActivity extends Activity {
         list = (RecyclerView)findViewById(R.id.list);
         list.setLayoutManager(new LinearLayoutManager(MainActivity.this, LinearLayoutManager.VERTICAL, false));
 
-        top = new StickyHeadersItemDecoration(new LengthHeaderAdapter(), list, HeaderPosition.TOP);
+        top = new StickyHeadersItemDecoration(new BigramHeaderAdapter(), list, HeaderPosition.TOP);
         overlay = new StickyHeadersItemDecoration(new InitialHeaderAdapter(), list, HeaderPosition.OVERLAY);
 
 
@@ -56,7 +56,7 @@ public class MainActivity extends Activity {
 
         @Override
         public void onTabSelected(ActionBar.Tab tab, android.app.FragmentTransaction fragmentTransaction) {
-            list.setAdapter(new PersonAdapter(PersonAdapter.Sort.LENGTH));
+            list.setAdapter(new PersonAdapter());
             list.removeItemDecoration(overlay);
             list.addItemDecoration(top);
         }
@@ -77,7 +77,7 @@ public class MainActivity extends Activity {
 
         @Override
         public void onTabSelected(ActionBar.Tab tab, android.app.FragmentTransaction fragmentTransaction) {
-            list.setAdapter(new PersonAdapter(PersonAdapter.Sort.ALPHABETICAL));
+            list.setAdapter(new PersonAdapter());
             list.removeItemDecoration(top);
             list.addItemDecoration(overlay);
         }
