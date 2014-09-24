@@ -10,34 +10,35 @@ import com.eowise.recyclerview.stickyheaders.StickyHeadersAdapter;
 import com.eowise.recyclerview.stickyheaders.samples.R;
 
 /**
- * Created by aurel on 23/09/14.
+ * Created by aurel on 24/09/14.
  */
-public class PersonInitialAdapter implements StickyHeadersAdapter<PersonAdapter.ViewHolder, PersonInitialAdapter.ViewHolder> {
+public class LengthHeaderAdapter implements StickyHeadersAdapter<PersonAdapter.ViewHolder, LengthHeaderAdapter.ViewHolder> {
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent) {
-        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.letter_header, parent, false);
+        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.top_header, parent, false);
 
         return new ViewHolder(itemView);
     }
 
     @Override
     public void onBindViewHolder(ViewHolder headerViewHolder, PersonAdapter.ViewHolder itemViewHolder, int position) {
-        headerViewHolder.letter.setText(itemViewHolder.label.getText().subSequence(0, 1));
+        headerViewHolder.title.setText(Integer.toString(itemViewHolder.label.getText().length()));
     }
 
     @Override
     public long getHeaderId(PersonAdapter.ViewHolder viewHolder, int position) {
-        return viewHolder.label.getText().charAt(0);
+        return viewHolder.label.getText().length();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
-        TextView letter;
+        TextView title;
 
         public ViewHolder(View itemView) {
             super(itemView);
-            letter = (TextView) itemView.findViewById(R.id.letter);
+
+            title = (TextView) itemView.findViewById(R.id.title);
         }
     }
 }

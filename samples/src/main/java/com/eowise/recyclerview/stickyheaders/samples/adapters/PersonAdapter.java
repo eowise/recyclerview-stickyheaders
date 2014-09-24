@@ -8,6 +8,9 @@ import android.widget.TextView;
 
 import com.eowise.recyclerview.stickyheaders.samples.R;
 
+import java.util.Arrays;
+import java.util.Comparator;
+
 /**
  * Created by aurel on 22/09/14.
  */
@@ -216,6 +219,22 @@ public class PersonAdapter extends RecyclerView.Adapter<PersonAdapter.ViewHolder
             "Yu Schilke"
     };
 
+    public PersonAdapter(Sort sort) {
+        switch (sort) {
+            case LENGTH:
+                Arrays.sort(items, new Comparator<String>() {
+                    @Override
+                    public int compare(String a, String b) {
+                        return a.length() - b.length();
+                    }
+                });
+                break;
+            case ALPHABETICAL:
+                Arrays.sort(items);
+                break;
+        }
+    }
+
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
         View itemView = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.list_item, viewGroup, false);
@@ -242,5 +261,10 @@ public class PersonAdapter extends RecyclerView.Adapter<PersonAdapter.ViewHolder
             super(itemView);
             label = (TextView) itemView.findViewById(R.id.name);
         }
+    }
+
+    public static enum Sort {
+        LENGTH,
+        ALPHABETICAL
     }
 }
