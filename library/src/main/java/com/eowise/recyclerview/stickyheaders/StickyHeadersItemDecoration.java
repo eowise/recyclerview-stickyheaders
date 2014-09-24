@@ -3,6 +3,7 @@ package com.eowise.recyclerview.stickyheaders;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.support.v7.widget.RecyclerView;
+import android.util.SparseLongArray;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -15,7 +16,7 @@ public class StickyHeadersItemDecoration extends RecyclerView.ItemDecoration {
 
     private final StickyHeadersAdapter adapter;
     private final RecyclerView.ViewHolder headerViewHolder;
-    private final HashMap<Integer, Long> headersIds;
+    private final SparseLongArray headersIds;
     private HeaderPosition headerPosition;
 
     private final int headerHeight;
@@ -28,7 +29,7 @@ public class StickyHeadersItemDecoration extends RecyclerView.ItemDecoration {
         this.adapter = adapter;
         this.headerViewHolder = adapter.onCreateViewHolder(parent);
         this.headerPosition = headerPosition;
-        this.headersIds = new HashMap<Integer, Long>();
+        this.headersIds = new SparseLongArray();
 
         int widthSpec = View.MeasureSpec.makeMeasureSpec(ViewGroup.LayoutParams.MATCH_PARENT, View.MeasureSpec.AT_MOST);
         int heightSpec = View.MeasureSpec.makeMeasureSpec(ViewGroup.LayoutParams.WRAP_CONTENT, View.MeasureSpec.UNSPECIFIED);
@@ -129,7 +130,7 @@ public class StickyHeadersItemDecoration extends RecyclerView.ItemDecoration {
     }
 
     private long getHeaderId(RecyclerView.ViewHolder itemViewHolder, int dataSetPosition) {
-        if (!headersIds.containsKey(dataSetPosition)) {
+        if (headersIds.indexOfKey(dataSetPosition) < 0) {
             headersIds.put(itemViewHolder.getPosition(), adapter.getHeaderId(itemViewHolder, itemViewHolder.getPosition()));
         }
 
