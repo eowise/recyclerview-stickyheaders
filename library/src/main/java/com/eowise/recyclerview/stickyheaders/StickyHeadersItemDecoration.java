@@ -79,7 +79,7 @@ public class StickyHeadersItemDecoration extends RecyclerView.ItemDecoration {
     @Override
     public void getItemOffsets(Rect outRect, int itemPosition, RecyclerView parent) {
 
-        if (itemPosition != 0 && getHeaderId(parent.findViewHolderForPosition(itemPosition), itemPosition) == getHeaderId(parent.findViewHolderForPosition(itemPosition - 1), itemPosition)) {
+        if (itemPosition != 0 && getHeaderId(parent.findViewHolderForPosition(itemPosition), itemPosition) == getHeaderId(parent.findViewHolderForPosition(itemPosition - 1), itemPosition - 1)) {
             outRect.set(0, 0, 0, 0);
         }
         else {
