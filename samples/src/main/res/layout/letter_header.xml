@@ -2,11 +2,11 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingStart="@dimen/letter_header_padding">
+    android:paddingEnd="@dimen/item_padding">
     <TextView
         android:id="@+id/letter"
         android:layout_width="match_parent"
         android:layout_height="?android:listPreferredItemHeight"
-        android:gravity="left|center_vertical"
+        android:gravity="right|center_vertical"
         android:textAppearance="?android:textAppearanceLarge"/>
 </LinearLayout>
