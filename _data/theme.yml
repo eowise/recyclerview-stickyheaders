@@ -1,0 +1,25 @@
+# Theme customization is done on this file instead of _config.yml so that
+# you don't have to restart Jekyll to see changes.
+
+# Number of posts displayed on the home page.
+num_home_posts: 3
+
+# Color scheme based on http://flatuicolors.com/.
+# Possible values:
+# - default
+# - dark
+# - turquoise
+# - green
+# - blue
+# - purple
+# - orange
+# - red
+color: default
+
+# Show navigation below each post?
+show_post_navs: true
+
+# Hides the sidebar.
+# You can also hide the sidebar by setting hide_sidebar: true on
+# the YAML front matter for each page.
+hide_sidebar: false
