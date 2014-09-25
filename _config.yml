@@ -1,6 +1,6 @@
-baseurl: "/shiori" # The subpath of your site. Use "" if you're hosting a blog at the root level.
-url: "http://ellekasai.github.io" # the base hostname & protocol for your site
-title: "Shiori"
+baseurl: "/recyclerview-stickyheaders" # The subpath of your site. Use "" if you're hosting a blog at the root level.
+url: "http://eowise.github.io" # the base hostname & protocol for your site
+title: "recyclerview-stickyheaders"
 
 # This is used by feed.xml. Uncomment if you want to use it.
 # description: "..."
