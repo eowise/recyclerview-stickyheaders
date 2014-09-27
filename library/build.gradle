@@ -1,4 +1,6 @@
 apply plugin: 'com.android.library'
+apply plugin: 'maven'
+apply plugin: 'signing'
 
 dependencies {
     compile 'com.android.support:recyclerview-v7:+'
@@ -7,4 +9,58 @@ dependencies {
 android {
     compileSdkVersion 'android-L'
     buildToolsVersion '20.0.0'
+}
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+                authentication(userName: sonatypeUsername, password: sonatypePassword)
+            }
+            snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
+                authentication(userName: sonatypeUsername, password: sonatypePassword)
+            }
+
+            pom.artifactId = 'recyclerview-stickyheaders'
+
+            pom.project {
+                packaging 'aar'
+                parent {
+                    groupId 'org.sonatype.oss'
+                    artifactId 'oss-parent'
+                    version 7
+                }
+                scm {
+                    connection 'scm:git:git@github.com:eowise/recyclerview-stickyheaders.git'
+                    developerConnection 'scm:git:git@github.com:eowise/recyclerview-stickyheaders.git'
+                    url 'git@github.com:eowise/recyclerview-stickyheaders.git'
+                }
+            }
+        }
+    }
+}
+
+signing {
+    required { isReleaseBuild() && gradle.taskGraph.hasTask("uploadArchives") }
+    sign configurations.archives
+}
+
+task androidJavadocs(type: Javadoc) {
+    source = android.sourceSets.main.java.source
+    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+}
+
+task androidJavadocsJar(type: Jar, dependsOn: androidJavadocs) {
+    classifier = 'javadoc'
+    from androidJavadocs.destinationDir
+}
+
+task androidSourcesJar(type: Jar) {
+    classifier = 'sources'
+    from android.sourceSets.main.java.source
+}
+
+artifacts {
+    archives androidSourcesJar
+    archives androidJavadocsJar
 }
