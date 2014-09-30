@@ -1,5 +1,5 @@
 apply plugin: 'com.android.library'
-apply plugin: 'maven'
+apply plugin: 'android-maven'
 apply plugin: 'signing'
 
 dependencies {
@@ -9,6 +9,11 @@ dependencies {
 android {
     compileSdkVersion 'android-L'
     buildToolsVersion '20.0.0'
+}
+install {
+    repositories.mavenInstaller {
+        pom.artifactId = 'recyclerview-stickyheaders'
+    }
 }
 
 uploadArchives {
