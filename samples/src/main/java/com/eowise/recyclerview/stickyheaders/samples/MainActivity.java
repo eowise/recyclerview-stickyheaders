@@ -29,6 +29,8 @@ public class MainActivity extends Activity {
 
         list = (RecyclerView)findViewById(R.id.list);
         list.setLayoutManager(new LinearLayoutManager(MainActivity.this, LinearLayoutManager.VERTICAL, false));
+        list.getItemAnimator().setMoveDuration(1000);
+
 
         top = new StickyHeadersItemDecoration(new BigramHeaderAdapter(), list, HeaderPosition.TOP);
         overlay = new StickyHeadersItemDecoration(new InitialHeaderAdapter(), list, HeaderPosition.OVERLAY);

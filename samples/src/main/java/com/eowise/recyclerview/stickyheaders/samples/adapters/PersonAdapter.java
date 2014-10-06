@@ -7,44 +7,69 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.eowise.recyclerview.stickyheaders.samples.R;
+import com.eowise.recyclerview.stickyheaders.samples.listeners.OnRemoveListener;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.List;
 
 /**
  * Created by aurel on 22/09/14.
  */
-public class PersonAdapter extends RecyclerView.Adapter<PersonAdapter.ViewHolder> {
+public class PersonAdapter extends RecyclerView.Adapter<PersonAdapter.ViewHolder> implements OnRemoveListener {
+
+    private List<String> items;
+
+    public PersonAdapter() {
+        items = new ArrayList<String>(Arrays.asList(persons));
+    }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
         View itemView = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.list_item, viewGroup, false);
 
-        return new ViewHolder(itemView);
+        return new ViewHolder(itemView, this);
 
     }
 
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, int position) {
-        viewHolder.label.setText(items[position]);
+        viewHolder.label.setText(items.get(position));
     }
 
     @Override
     public int getItemCount() {
-        return items.length;
+        return items.size();
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    @Override
+    public void onRemove(int position) {
+        items.remove(position);
+        notifyItemRemoved(position);
+    }
+
+    public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         TextView label;
+        private OnRemoveListener listener;
 
-        public ViewHolder(View itemView) {
+        public ViewHolder(View itemView, OnRemoveListener listener) {
             super(itemView);
-            label = (TextView) itemView.findViewById(R.id.name);
+            this.label = (TextView) itemView.findViewById(R.id.name);
+            this.listener = listener;
+
+            itemView.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View view) {
+            listener.onRemove(getPosition());
         }
     }
 
-    private String[] items = {
+
+    private static String[] persons = {
             "Abram Tavernia",
             "Alexa Oquin",
             "Alvin Lainez",
