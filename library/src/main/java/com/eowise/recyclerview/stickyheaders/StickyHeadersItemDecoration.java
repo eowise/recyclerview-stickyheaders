@@ -56,25 +56,27 @@ public class StickyHeadersItemDecoration extends RecyclerView.ItemDecoration {
 
         for (int i = childCount - 1; i >= 0; i--) {
             final View child = parent.getChildAt(i);
-            int position = parent.getChildPosition(child);
-            currentHeaderId = getHeaderId(position);
+            if (child.isLaidOut()) {
+                int position = parent.getChildPosition(child);
+                currentHeaderId = getHeaderId(position);
 
-            if (i == 0 || !currentHeaderId.equals(getHeaderId(position - 1))) {
+                if (i == 0 || !currentHeaderId.equals(getHeaderId(position - 1))) {
 
-                float y = getHeaderY(child, lm.getDecoratedTop(child));
+                    float y = getHeaderY(child, lm.getDecoratedTop(child));
 
-                if (lastY != null && lastY - headerHeight < y) {
-                    y = lastY - headerHeight;
+                    if (lastY != null && lastY - headerHeight < y) {
+                        y = lastY - headerHeight;
+                    }
+
+                    adapter.onBindViewHolder(headerViewHolder, position);
+
+                    c.save();
+                    c.translate(0, y);
+                    header.draw(c);
+                    c.restore();
+
+                    lastY = y;
                 }
-
-                adapter.onBindViewHolder(headerViewHolder, position);
-
-                c.save();
-                c.translate(0, y);
-                header.draw(c);
-                c.restore();
-
-                lastY = y;
             }
         }
     }
