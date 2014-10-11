@@ -49,6 +49,10 @@ public class PersonAdapter extends RecyclerView.Adapter<PersonAdapter.ViewHolder
         notifyItemRemoved(position);
     }
 
+    public List<String> getItems() {
+        return items;
+    }
+
     public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         TextView label;

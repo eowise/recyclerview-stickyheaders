@@ -20,6 +20,7 @@ public class MainActivity extends Activity {
     private RecyclerView list;
     private StickyHeadersItemDecoration top;
     private StickyHeadersItemDecoration overlay;
+    private PersonAdapter personAdapter;
 
 
     @Override
@@ -27,13 +28,14 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        personAdapter = new PersonAdapter();
         list = (RecyclerView)findViewById(R.id.list);
         list.setLayoutManager(new LinearLayoutManager(MainActivity.this, LinearLayoutManager.VERTICAL, false));
         list.getItemAnimator().setMoveDuration(1000);
 
 
-        top = new StickyHeadersItemDecoration(new BigramHeaderAdapter(), list, HeaderPosition.TOP);
-        overlay = new StickyHeadersItemDecoration(new InitialHeaderAdapter(), list, HeaderPosition.OVERLAY);
+        top = new StickyHeadersItemDecoration(new BigramHeaderAdapter(personAdapter.getItems()), list, HeaderPosition.TOP);
+        overlay = new StickyHeadersItemDecoration(new InitialHeaderAdapter(personAdapter.getItems()), list, HeaderPosition.OVERLAY);
 
 
         ActionBar actionBar = getActionBar();
@@ -58,7 +60,7 @@ public class MainActivity extends Activity {
 
         @Override
         public void onTabSelected(ActionBar.Tab tab, android.app.FragmentTransaction fragmentTransaction) {
-            list.setAdapter(new PersonAdapter());
+            list.setAdapter(personAdapter);
             list.removeItemDecoration(overlay);
             list.addItemDecoration(top);
         }
@@ -79,7 +81,7 @@ public class MainActivity extends Activity {
 
         @Override
         public void onTabSelected(ActionBar.Tab tab, android.app.FragmentTransaction fragmentTransaction) {
-            list.setAdapter(new PersonAdapter());
+            list.setAdapter(personAdapter);
             list.removeItemDecoration(top);
             list.addItemDecoration(overlay);
         }

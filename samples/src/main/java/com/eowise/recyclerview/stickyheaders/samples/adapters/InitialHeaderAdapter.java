@@ -9,10 +9,18 @@ import android.widget.TextView;
 import com.eowise.recyclerview.stickyheaders.StickyHeadersAdapter;
 import com.eowise.recyclerview.stickyheaders.samples.R;
 
+import java.util.List;
+
 /**
  * Created by aurel on 23/09/14.
  */
-public class InitialHeaderAdapter implements StickyHeadersAdapter<PersonAdapter.ViewHolder, InitialHeaderAdapter.ViewHolder> {
+public class InitialHeaderAdapter implements StickyHeadersAdapter<InitialHeaderAdapter.ViewHolder> {
+
+    private List<String> items;
+
+    public InitialHeaderAdapter(List<String> items) {
+        this.items = items;
+    }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent) {
@@ -22,13 +30,13 @@ public class InitialHeaderAdapter implements StickyHeadersAdapter<PersonAdapter.
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder headerViewHolder, PersonAdapter.ViewHolder itemViewHolder, int position) {
-        headerViewHolder.letter.setText(itemViewHolder.label.getText().subSequence(0, 1));
+    public void onBindViewHolder(ViewHolder headerViewHolder, int position) {
+        headerViewHolder.letter.setText(items.get(position).subSequence(0, 1));
     }
 
     @Override
-    public long getHeaderId(PersonAdapter.ViewHolder viewHolder, int position) {
-        return viewHolder.label.getText().charAt(0);
+    public long getHeaderId(int position) {
+        return items.get(position).charAt(0);
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
