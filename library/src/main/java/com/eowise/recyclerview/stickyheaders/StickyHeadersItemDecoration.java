@@ -47,7 +47,6 @@ public class StickyHeadersItemDecoration extends RecyclerView.ItemDecoration {
         final int childCount = parent.getChildCount();
         final RecyclerView.LayoutManager lm = parent.getLayoutManager();
         View header = headerViewHolder.itemView;
-        Transformation outTransformation = new Transformation();
         Long currentHeaderId;
         Float lastY = null;
 
@@ -152,10 +151,16 @@ public class StickyHeadersItemDecoration extends RecyclerView.ItemDecoration {
         return headersIds.get(dataSetPosition);
     }
 
+    // TODO: rearrange headersIds instead of clearing all items
     private class AdapterDataObserver extends RecyclerView.AdapterDataObserver {
 
         @Override
         public void onItemRangeRemoved(int positionStart, int itemCount) {
+            headersIds.clear();
+        }
+
+        @Override
+        public void onItemRangeInserted(int positionStart, int itemCount) {
             headersIds.clear();
         }
     }
