@@ -3,10 +3,12 @@ package com.eowise.recyclerview.stickyheaders.samples;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.os.Bundle;
+import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
 import com.eowise.recyclerview.stickyheaders.HeaderPosition;
+import com.eowise.recyclerview.stickyheaders.InvalidateAnimationRunnable;
 import com.eowise.recyclerview.stickyheaders.StickyHeadersItemDecoration;
 import com.eowise.recyclerview.stickyheaders.samples.adapters.BigramHeaderAdapter;
 import com.eowise.recyclerview.stickyheaders.samples.adapters.InitialHeaderAdapter;
@@ -28,15 +30,23 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        personAdapter = new PersonAdapter();
         list = (RecyclerView)findViewById(R.id.list);
         list.setLayoutManager(new LinearLayoutManager(MainActivity.this, LinearLayoutManager.VERTICAL, false));
-        list.getItemAnimator().setMoveDuration(1000);
+
+        personAdapter = new PersonAdapter();
+        personAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
+            @Override
+            public void onItemRangeRemoved(int positionStart, int itemCount) {
+                ViewCompat.postOnAnimationDelayed(list, new InvalidateAnimationRunnable(list), 50);
+            }
+        });
 
 
         top = new StickyHeadersItemDecoration(new BigramHeaderAdapter(personAdapter.getItems()), list, HeaderPosition.TOP);
         overlay = new StickyHeadersItemDecoration(new InitialHeaderAdapter(personAdapter.getItems()), list, HeaderPosition.OVERLAY);
 
+        top.registerAdapterDataObserver(personAdapter);
+        overlay.registerAdapterDataObserver(personAdapter);
 
         ActionBar actionBar = getActionBar();
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);

@@ -7,6 +7,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.SparseLongArray;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Transformation;
 
 import java.util.HashMap;
 
@@ -18,6 +19,7 @@ public class StickyHeadersItemDecoration extends RecyclerView.ItemDecoration {
     private final StickyHeadersAdapter adapter;
     private final RecyclerView.ViewHolder headerViewHolder;
     private final SparseLongArray headersIds;
+    private final AdapterDataObserver adapterDataObserver;
     private HeaderPosition headerPosition;
 
     private final int headerHeight;
@@ -31,6 +33,7 @@ public class StickyHeadersItemDecoration extends RecyclerView.ItemDecoration {
         this.headerViewHolder = adapter.onCreateViewHolder(parent);
         this.headerPosition = headerPosition;
         this.headersIds = new SparseLongArray();
+        this.adapterDataObserver = new AdapterDataObserver();
 
         int widthSpec = View.MeasureSpec.makeMeasureSpec(ViewGroup.LayoutParams.MATCH_PARENT, View.MeasureSpec.AT_MOST);
         int heightSpec = View.MeasureSpec.makeMeasureSpec(ViewGroup.LayoutParams.WRAP_CONTENT, View.MeasureSpec.UNSPECIFIED);
@@ -44,8 +47,10 @@ public class StickyHeadersItemDecoration extends RecyclerView.ItemDecoration {
         final int childCount = parent.getChildCount();
         final RecyclerView.LayoutManager lm = parent.getLayoutManager();
         View header = headerViewHolder.itemView;
+        Transformation outTransformation = new Transformation();
         Long currentHeaderId;
         Float lastY = null;
+
 
         if (!header.isLaidOut()) {
             int widthSpec = View.MeasureSpec.makeMeasureSpec(parent.getWidth(), View.MeasureSpec.EXACTLY);
@@ -58,14 +63,21 @@ public class StickyHeadersItemDecoration extends RecyclerView.ItemDecoration {
             final View child = parent.getChildAt(i);
             if (child.isLaidOut()) {
                 int position = parent.getChildPosition(child);
+                float translationY = ViewCompat.getTranslationY(child);
                 currentHeaderId = getHeaderId(position);
 
                 if (i == 0 || !currentHeaderId.equals(getHeaderId(position - 1))) {
 
-                    float y = getHeaderY(child, lm.getDecoratedTop(child));
+                    float y = getHeaderY(child, lm.getDecoratedTop(child)) ;
 
-                    if (lastY != null && lastY - headerHeight < y) {
+
+
+                    if (lastY != null && lastY < y + headerHeight) {
                         y = lastY - headerHeight;
+                    }
+
+                    if (translationY != 0) {
+                        y += translationY;
                     }
 
                     adapter.onBindViewHolder(headerViewHolder, position);
@@ -109,14 +121,19 @@ public class StickyHeadersItemDecoration extends RecyclerView.ItemDecoration {
 
     }
 
+    public void registerAdapterDataObserver(RecyclerView.Adapter adapter) {
+        adapter.registerAdapterDataObserver(adapterDataObserver);
+    }
+
     private float getHeaderY(View item, int top) {
 
         float y;
         switch (headerPosition) {
             case TOP:
-                y = top < headerHeight ? 0 : top - headerHeight;
+                y = top < 0 ? 0 : top;
                 break;
             case BOTTOM:
+                // TODO: Use getDecoratedBottom
                 y = top + item.getHeight() < headerHeight ? 0 : top + item.getHeight();
                 break;
             default:
@@ -133,6 +150,14 @@ public class StickyHeadersItemDecoration extends RecyclerView.ItemDecoration {
         }
 
         return headersIds.get(dataSetPosition);
+    }
+
+    private class AdapterDataObserver extends RecyclerView.AdapterDataObserver {
+
+        @Override
+        public void onItemRangeRemoved(int positionStart, int itemCount) {
+            headersIds.clear();
+        }
     }
 
 }
