@@ -1,5 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
+
     <style name="AppTheme" parent="android:Theme.Material.Light">
+        <item name="android:windowActionBar">false</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:colorPrimary">@color/primary</item>
+        <item name="android:colorPrimaryDark">@color/primary_dark</item>
+        <item name="android:colorAccent">@color/accent</item>
+        <item name="android:textColorPrimary">@color/text_primary</item>
+        <item name="android:textColor">@color/text_secondary</item>
+
+        <!-- Main theme action bar-->
+        <item name="android:actionBarStyle">@style/MainActionBar</item>
+        <item name="android:actionBarTheme">@style/MainActionBarThemeOverlay</item>
+    </style>
+
+
+    <style name="MainActionBar" parent="android:Widget.Material.Light.ActionBar">
+        <item name="android:background">?android:colorPrimary</item>
+        <item name="android:textColor">?android:textColorPrimary</item>
+        <item name="android:displayOptions">showTitle|homeAsUp</item>
+    </style>
+
+    <style name="MainActionBarThemeOverlay" parent="">
+        <item name="android:colorControlHighlight">#3fff</item>
+    </style>
+
+    <style name="Widget.HeaderBar.Spinner" parent="android:Widget.Material.Spinner">
+        <item name="android:divider">@null</item>
+        <item name="android:dividerHeight">0dp</item>
+        <item name="android:theme">@style/MainActionBarThemeOverlay</item>
     </style>
 </resources>

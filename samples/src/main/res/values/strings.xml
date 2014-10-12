@@ -1,4 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Sticky headers Samples</string>
+
+    <string-array name="samples">
+        <item>Top</item>
+        <item>Overlay</item>
+    </string-array>
 </resources>

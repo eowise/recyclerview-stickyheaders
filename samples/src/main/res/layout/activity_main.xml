@@ -5,6 +5,21 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <Toolbar
+        style="@style/MainActionBar"
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:layout_gravity="center_vertical">
+        <Spinner
+            style="@style/Widget.HeaderBar.Spinner"
+            android:id="@+id/samples_spinner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:entries="@array/samples"
+            />
+    </Toolbar>
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/list"
         android:scrollbars="vertical"

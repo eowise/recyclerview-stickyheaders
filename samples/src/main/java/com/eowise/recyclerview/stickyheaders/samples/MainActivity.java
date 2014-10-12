@@ -1,11 +1,15 @@
 package com.eowise.recyclerview.stickyheaders.samples;
 
-import android.app.ActionBar;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.Spinner;
+import android.widget.Toolbar;
 
 import com.eowise.recyclerview.stickyheaders.HeaderPosition;
 import com.eowise.recyclerview.stickyheaders.InvalidateAnimationRunnable;
@@ -13,16 +17,20 @@ import com.eowise.recyclerview.stickyheaders.StickyHeadersItemDecoration;
 import com.eowise.recyclerview.stickyheaders.samples.adapters.BigramHeaderAdapter;
 import com.eowise.recyclerview.stickyheaders.samples.adapters.InitialHeaderAdapter;
 import com.eowise.recyclerview.stickyheaders.samples.adapters.PersonAdapter;
+import com.eowise.recyclerview.stickyheaders.samples.data.PersonDataProvider;
 
 /**
  * Created by aurel on 22/09/14.
  */
 public class MainActivity extends Activity {
 
+    private Toolbar toolbar;
     private RecyclerView list;
     private StickyHeadersItemDecoration top;
     private StickyHeadersItemDecoration overlay;
+    private PersonDataProvider personDataProvider;
     private PersonAdapter personAdapter;
+    private Spinner samplesSpinner;
 
 
     @Override
@@ -30,11 +38,21 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        toolbar = (Toolbar)findViewById(R.id.toolbar);
         list = (RecyclerView)findViewById(R.id.list);
+        samplesSpinner = (Spinner)findViewById(R.id.samples_spinner);
+
         list.setLayoutManager(new LinearLayoutManager(MainActivity.this, LinearLayoutManager.VERTICAL, false));
 
-        personAdapter = new PersonAdapter();
+        personDataProvider = new PersonDataProvider();
+        personAdapter = new PersonAdapter(personDataProvider);
         personAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
+
+            @Override
+            public void onItemRangeInserted(int positionStart, int itemCount) {
+                ViewCompat.postOnAnimationDelayed(list, new InvalidateAnimationRunnable(list), 50);
+            }
+
             @Override
             public void onItemRangeRemoved(int positionStart, int itemCount) {
                 ViewCompat.postOnAnimationDelayed(list, new InvalidateAnimationRunnable(list), 50);
@@ -42,69 +60,50 @@ public class MainActivity extends Activity {
         });
 
 
-        top = new StickyHeadersItemDecoration(new BigramHeaderAdapter(personAdapter.getItems()), list, HeaderPosition.TOP);
-        overlay = new StickyHeadersItemDecoration(new InitialHeaderAdapter(personAdapter.getItems()), list, HeaderPosition.OVERLAY);
+        top = new StickyHeadersItemDecoration(new BigramHeaderAdapter(personDataProvider.getItems()), list, HeaderPosition.TOP);
+        overlay = new StickyHeadersItemDecoration(new InitialHeaderAdapter(personDataProvider.getItems()), list, HeaderPosition.OVERLAY);
 
         top.registerAdapterDataObserver(personAdapter);
         overlay.registerAdapterDataObserver(personAdapter);
 
-        ActionBar actionBar = getActionBar();
-        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
-        actionBar.setDisplayShowTitleEnabled(false);
-        actionBar.setDisplayShowHomeEnabled(false);
+        toolbar.inflateMenu(R.menu.main);
+        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem menuItem) {
+
+                if (menuItem.getItemId() == R.id.add_item) {
+
+                    int addedPosition = personDataProvider.insertAfter(list.getChildPosition(list.getChildAt(0)));
+                    personAdapter.notifyItemInserted(addedPosition);
+
+                }
+
+                return false;
+            }
+        });
 
 
-        actionBar.addTab(actionBar.newTab()
-                        .setText("Top")
-                        .setTabListener(new TopHeaderTabListener()),
-                true);
+        samplesSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                if (i == 0) {
+                    list.setAdapter(personAdapter);
+                    list.removeItemDecoration(overlay);
+                    list.addItemDecoration(top);
+                }
+                else {
+                    list.setAdapter(personAdapter);
+                    list.removeItemDecoration(top);
+                    list.addItemDecoration(overlay);
+                }
+            }
 
-        actionBar.addTab(actionBar.newTab()
-                        .setText("Overlay")
-                        .setTabListener(new OverlayHeaderTabListener()),
-                false);
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
 
-    }
+            }
+        });
 
-    public class TopHeaderTabListener implements ActionBar.TabListener {
-
-        @Override
-        public void onTabSelected(ActionBar.Tab tab, android.app.FragmentTransaction fragmentTransaction) {
-            list.setAdapter(personAdapter);
-            list.removeItemDecoration(overlay);
-            list.addItemDecoration(top);
-        }
-
-        @Override
-        public void onTabUnselected(ActionBar.Tab tab, android.app.FragmentTransaction fragmentTransaction) {
-
-        }
-
-        @Override
-        public void onTabReselected(ActionBar.Tab tab, android.app.FragmentTransaction fragmentTransaction) {
-
-        }
-    }
-
-
-    public class OverlayHeaderTabListener implements ActionBar.TabListener {
-
-        @Override
-        public void onTabSelected(ActionBar.Tab tab, android.app.FragmentTransaction fragmentTransaction) {
-            list.setAdapter(personAdapter);
-            list.removeItemDecoration(top);
-            list.addItemDecoration(overlay);
-        }
-
-        @Override
-        public void onTabUnselected(ActionBar.Tab tab, android.app.FragmentTransaction fragmentTransaction) {
-
-        }
-
-        @Override
-        public void onTabReselected(ActionBar.Tab tab, android.app.FragmentTransaction fragmentTransaction) {
-
-        }
     }
 
 }
