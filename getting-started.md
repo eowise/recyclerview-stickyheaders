@@ -26,7 +26,7 @@ Add the following to your pom.xml:
 <dependency>
     <groupId>com.eowise</groupId>
     <artifactId>recyclerview-stickyheaders</artifactId>
-    <version>0.1.0</version>
+    <version>0.2.0</version>
 </dependency>
 {% endhighlight %}
 
@@ -39,10 +39,10 @@ Recyclerview-stickyheaders add sticky headers feature to a `RecyclerView` with a
 This interface is used to create and bind the headers view holders, and to specify on witch header each item belongs.
 
 {% highlight java %}
-public interface StickyHeadersAdapter<ItemViewHolder extends ViewHolder, HeaderViewHolder extends ViewHolder>
+public interface StickyHeadersAdapter<HeaderViewHolder extends ViewHolder>
 {% endhighlight %}
 
-The parametrized type `ItemViewHolder` type represents the ViewHolder for RecyclerView items, whereas  `HeaderViewHolder` is the ViewHolder for headers.
+The parametrized type `HeaderViewHolder` is the ViewHolder for headers.
 
 `StickyHeadersAdapter` interface consists of 3 methods :
 
@@ -50,11 +50,11 @@ The parametrized type `ItemViewHolder` type represents the ViewHolder for Recycl
 // Create and returns header ViewHolder witch encapsulate the header view.
 HeaderViewHolder onCreateViewHolder(ViewGroup parent);
 
-// Binds headerViewHolder underlying views using itemViewHolder ViewHolder and its position.
-void onBindViewHolder(HeaderViewHolder headerViewHolder, ItemViewHolder itemViewHolder, int position);
+// Binds headerViewHolder underlying views using its position.
+void onBindViewHolder(HeaderViewHolder headerViewHolder, int position);
 
-// Returns the header id for viewHolder
-long getHeaderId(ItemViewHolder viewHolder, int position);
+// Returns the header id matching the item postion
+long getHeaderId(int position);
 {% endhighlight %}
 
 You can find in the samples provided with the recyclerview-stickyheaders library a [basic implementation of `StickyHeadersAdapter`](https://github.com/eowise/recyclerview-stickyheaders/blob/master/samples/src/main/java/com/eowise/recyclerview/stickyheaders/samples/adapters/InitialHeaderAdapter.java).
@@ -70,6 +70,7 @@ protected void onCreate(Bundle savedInstanceState) {
   setContentView(R.layout.activity_main);
 
   RecyclerView list = (RecyclerView)findViewById(R.id.list);
+  PersonAdapter personAdapter = new PersonAdapter();
 
   // Create the item decoration witch will draw sticky headers
   StickyHeadersItemDecoration letterHeaderDecoration = new StickyHeadersItemDecoration(
@@ -78,10 +79,26 @@ protected void onCreate(Bundle savedInstanceState) {
     HeaderPosition.OVERLAY      // Decoration position relative to a item
   );
 
-  list.setAdapter(new PersonAdapter());
+  list.setAdapter(personAdapter);
   list.setLayoutManager(new LinearLayoutManager(MainActivity.this, LinearLayoutManager.VERTICAL, false));
   list.addItemDecoration(letterHeaderDecoration); // Add item decoration to the RecyclerView
 }
 {% endhighlight %}
 
 And you're done!
+
+If you plan to implements adding and/or removing items features, you must add the code below in order to enable item decoration drawing while items animations are running.
+
+{% highlight java %}
+personAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
+  @Override
+  public void onItemRangeInserted(int positionStart, int itemCount) {
+    ViewCompat.postOnAnimationDelayed(list, new InvalidateAnimationRunnable(list), 50);
+  }
+
+  @Override
+  public void onItemRangeRemoved(int positionStart, int itemCount) {
+    ViewCompat.postOnAnimationDelayed(list, new InvalidateAnimationRunnable(list), 50);
+  }
+});
+{% endhighlight %}
