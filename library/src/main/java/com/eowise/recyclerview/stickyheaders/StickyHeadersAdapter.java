@@ -23,7 +23,7 @@ public interface StickyHeadersAdapter<HeaderViewHolder extends RecyclerView.View
     void onBindViewHolder(HeaderViewHolder headerViewHolder, int position);
 
     /**
-     * Get the header id associated with the specified item.
+     * Get the header id associated with the specified item position.
      *
      * @param position the current item position
      * @return the header id for the current item
