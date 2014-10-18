@@ -8,8 +8,12 @@ import android.util.SparseLongArray;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Transformation;
+import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.LinkedList;
 
 /**
  * Created by aurel on 22/09/14.
@@ -18,7 +22,7 @@ public class StickyHeadersItemDecoration extends RecyclerView.ItemDecoration {
 
     private final StickyHeadersAdapter adapter;
     private final RecyclerView.ViewHolder headerViewHolder;
-    private final SparseLongArray headersIds;
+    private final ArrayList<Long> headersIds;
     private final AdapterDataObserver adapterDataObserver;
     private HeaderPosition headerPosition;
 
@@ -32,8 +36,8 @@ public class StickyHeadersItemDecoration extends RecyclerView.ItemDecoration {
         this.adapter = adapter;
         this.headerViewHolder = adapter.onCreateViewHolder(parent);
         this.headerPosition = headerPosition;
-        this.headersIds = new SparseLongArray();
-        this.adapterDataObserver = new AdapterDataObserver();
+        this.headersIds = new ArrayList<Long>();
+        this.adapterDataObserver = new AdapterDataObserver(headersIds);
 
         int widthSpec = View.MeasureSpec.makeMeasureSpec(ViewGroup.LayoutParams.MATCH_PARENT, View.MeasureSpec.AT_MOST);
         int heightSpec = View.MeasureSpec.makeMeasureSpec(ViewGroup.LayoutParams.WRAP_CONTENT, View.MeasureSpec.UNSPECIFIED);
@@ -41,9 +45,10 @@ public class StickyHeadersItemDecoration extends RecyclerView.ItemDecoration {
         headerHeight = headerViewHolder.itemView.getMeasuredHeight();
     }
 
-
     @Override
-    public void onDrawOver(Canvas c, RecyclerView parent) {
+    public void onDrawOver(Canvas c, RecyclerView parent, RecyclerView.State state) {
+
+
         final int childCount = parent.getChildCount();
         final RecyclerView.LayoutManager lm = parent.getLayoutManager();
         View header = headerViewHolder.itemView;
@@ -58,10 +63,16 @@ public class StickyHeadersItemDecoration extends RecyclerView.ItemDecoration {
             header.layout(0, 0, header.getMeasuredWidth(), header.getMeasuredHeight());
         }
 
+
+
         for (int i = childCount - 1; i >= 0; i--) {
             final View child = parent.getChildAt(i);
-            if (child.isAttachedToWindow() && child.isLaidOut()) {
-                int position = parent.getChildPosition(child);
+
+            RecyclerView.ViewHolder holder = parent.getChildViewHolder(child);
+
+            int position = parent.getChildPosition(child);
+            if (position >= 0) {
+
                 float translationY = ViewCompat.getTranslationY(child);
                 currentHeaderId = getHeaderId(position);
 
@@ -70,11 +81,9 @@ public class StickyHeadersItemDecoration extends RecyclerView.ItemDecoration {
                     float y = getHeaderY(child, lm.getDecoratedTop(child)) + translationY;
 
 
-
                     if (lastY != null && lastY < y + headerHeight) {
                         y = lastY - headerHeight;
                     }
-
 
 
                     adapter.onBindViewHolder(headerViewHolder, position);
@@ -91,7 +100,10 @@ public class StickyHeadersItemDecoration extends RecyclerView.ItemDecoration {
     }
 
     @Override
-    public void getItemOffsets(Rect outRect, int itemPosition, RecyclerView parent) {
+    public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
+
+
+        int itemPosition = parent.getChildPosition(view);
 
         if (itemPosition != 0 && getHeaderId(itemPosition) == getHeaderId(itemPosition - 1)) {
             outRect.set(0, 0, 0, 0);
@@ -142,19 +154,30 @@ public class StickyHeadersItemDecoration extends RecyclerView.ItemDecoration {
     }
 
     private long getHeaderId(int dataSetPosition) {
-        if (headersIds.indexOfKey(dataSetPosition) < 0) {
-            headersIds.put(dataSetPosition, adapter.getHeaderId(dataSetPosition));
+        if (headersIds.size() <= dataSetPosition || headersIds.get(dataSetPosition) == null) {
+
+            for (int i = headersIds.size(); i <= dataSetPosition; i++)
+                headersIds.add(null);
+
+            headersIds.set(dataSetPosition, adapter.getHeaderId(dataSetPosition));
         }
 
         return headersIds.get(dataSetPosition);
     }
 
     // TODO: rearrange headersIds instead of clearing all items
-    private class AdapterDataObserver extends RecyclerView.AdapterDataObserver {
+    private static class AdapterDataObserver extends RecyclerView.AdapterDataObserver {
+
+        private final ArrayList<Long> headersIds;
+
+        public AdapterDataObserver(ArrayList<Long> headersIds) {
+            this.headersIds = headersIds;
+        }
 
         @Override
         public void onItemRangeRemoved(int positionStart, int itemCount) {
-            headersIds.clear();
+            if (headersIds.size() >= positionStart + itemCount)
+                headersIds.remove(positionStart);
         }
 
         @Override

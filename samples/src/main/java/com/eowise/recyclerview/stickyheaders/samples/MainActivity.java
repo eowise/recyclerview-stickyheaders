@@ -46,6 +46,7 @@ public class MainActivity extends Activity {
 
         personDataProvider = new PersonDataProvider();
         personAdapter = new PersonAdapter(personDataProvider);
+        /*
         personAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
 
             @Override
@@ -58,7 +59,7 @@ public class MainActivity extends Activity {
                 ViewCompat.postOnAnimationDelayed(list, new InvalidateAnimationRunnable(list), 50);
             }
         });
-
+        */
 
         top = new StickyHeadersItemDecoration(new BigramHeaderAdapter(personDataProvider.getItems()), list, HeaderPosition.TOP);
         overlay = new StickyHeadersItemDecoration(new InitialHeaderAdapter(personDataProvider.getItems()), list, HeaderPosition.OVERLAY);
