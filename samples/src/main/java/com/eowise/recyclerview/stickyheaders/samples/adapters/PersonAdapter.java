@@ -26,6 +26,8 @@ public class PersonAdapter extends RecyclerView.Adapter<PersonAdapter.ViewHolder
     public PersonAdapter(PersonDataProvider personDataProvider) {
         this.personDataProvider = personDataProvider;
         this.items = personDataProvider.getItems();
+
+        setHasStableIds(true);
     }
 
     @Override
@@ -33,7 +35,11 @@ public class PersonAdapter extends RecyclerView.Adapter<PersonAdapter.ViewHolder
         View itemView = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.list_item, viewGroup, false);
 
         return new ViewHolder(itemView, this);
+    }
 
+    @Override
+    public long getItemId(int position) {
+        return items.get(position).hashCode();
     }
 
     @Override
