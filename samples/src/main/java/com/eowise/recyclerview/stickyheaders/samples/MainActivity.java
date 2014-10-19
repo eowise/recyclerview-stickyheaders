@@ -1,21 +1,16 @@
 package com.eowise.recyclerview.stickyheaders.samples;
 
-import android.app.Activity;
 import android.os.Bundle;
-import android.support.v4.view.ViewCompat;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Spinner;
 
 import com.eowise.recyclerview.stickyheaders.HeaderPosition;
-import com.eowise.recyclerview.stickyheaders.InvalidateAnimationRunnable;
 import com.eowise.recyclerview.stickyheaders.StickyHeadersItemDecoration;
 import com.eowise.recyclerview.stickyheaders.samples.adapters.BigramHeaderAdapter;
 import com.eowise.recyclerview.stickyheaders.samples.adapters.InitialHeaderAdapter;
@@ -49,20 +44,6 @@ public class MainActivity extends ActionBarActivity {
 
         personDataProvider = new PersonDataProvider();
         personAdapter = new PersonAdapter(personDataProvider);
-        /*
-        personAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
-
-            @Override
-            public void onItemRangeInserted(int positionStart, int itemCount) {
-                ViewCompat.postOnAnimationDelayed(list, new InvalidateAnimationRunnable(list), 50);
-            }
-
-            @Override
-            public void onItemRangeRemoved(int positionStart, int itemCount) {
-                ViewCompat.postOnAnimationDelayed(list, new InvalidateAnimationRunnable(list), 50);
-            }
-        });
-        */
 
         top = new StickyHeadersItemDecoration(new BigramHeaderAdapter(personDataProvider.getItems()), list, HeaderPosition.TOP);
         overlay = new StickyHeadersItemDecoration(new InitialHeaderAdapter(personDataProvider.getItems()), list, HeaderPosition.OVERLAY);

@@ -10,9 +10,6 @@ import com.eowise.recyclerview.stickyheaders.samples.R;
 import com.eowise.recyclerview.stickyheaders.samples.data.PersonDataProvider;
 import com.eowise.recyclerview.stickyheaders.samples.listeners.OnRemoveListener;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
 import java.util.List;
 
 /**

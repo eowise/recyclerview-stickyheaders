@@ -5,18 +5,11 @@ import android.graphics.Rect;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerViewHelper;
-import android.util.SparseBooleanArray;
-import android.util.SparseLongArray;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Transformation;
-import android.widget.TextView;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.Iterator;
-import java.util.LinkedList;
 
 /**
  * Created by aurel on 22/09/14.
@@ -57,7 +50,6 @@ public class StickyHeadersItemDecoration extends RecyclerView.ItemDecoration {
         final int childCount = parent.getChildCount();
         final RecyclerView.LayoutManager lm = parent.getLayoutManager();
         View header = headerViewHolder.itemView;
-        Long currentHeaderId;
         Float lastY = null;
 
 
