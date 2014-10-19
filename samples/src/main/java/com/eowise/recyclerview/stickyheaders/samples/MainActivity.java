@@ -3,9 +3,12 @@ package com.eowise.recyclerview.stickyheaders.samples;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.view.ViewCompat;
+import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -22,7 +25,7 @@ import com.eowise.recyclerview.stickyheaders.samples.data.PersonDataProvider;
 /**
  * Created by aurel on 22/09/14.
  */
-public class MainActivity extends Activity {
+public class MainActivity extends ActionBarActivity {
 
     private Toolbar toolbar;
     private RecyclerView list;
@@ -67,22 +70,24 @@ public class MainActivity extends Activity {
         top.registerAdapterDataObserver(personAdapter);
         overlay.registerAdapterDataObserver(personAdapter);
 
+
+        // Inflate a menu to be displayed in the toolbar
         toolbar.inflateMenu(R.menu.main);
-        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem menuItem) {
 
-                if (menuItem.getItemId() == R.id.add_item) {
-
-                    int addedPosition = personDataProvider.insertAfter(list.getChildPosition(list.getChildAt(0)));
-                    personAdapter.notifyItemInserted(addedPosition);
-
+        // Set an OnMenuItemClickListener to handle menu item clicks
+        toolbar.setOnMenuItemClickListener(
+                new Toolbar.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+                        if (item.getItemId() == R.id.add_item) {
+                            int addedPosition = personDataProvider.insertAfter(list.getChildPosition(list.getChildAt(0)));
+                            personAdapter.notifyItemInserted(addedPosition);
+                            return true;
+                        }
+                        return false;
+                    }
                 }
-
-                return false;
-            }
-        });
-
+        );
 
         samplesSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override

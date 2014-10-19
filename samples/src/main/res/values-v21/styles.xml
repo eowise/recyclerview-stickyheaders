@@ -1,22 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="AppTheme" parent="Theme.AppCompat.Light">
-        <item name="android:windowActionBar">false</item>
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="android:colorPrimary">@color/primary</item>
         <item name="android:colorPrimaryDark">@color/primary_dark</item>
         <item name="android:colorAccent">@color/accent</item>
+        <item name="android:displayOptions">none</item>
 
-        <!-- Main theme action bar-->
-        <item name="android:actionBarStyle">@style/MainActionBar</item>
-        <item name="android:actionBarTheme">@style/MainActionBarThemeOverlay</item>
     </style>
 
-
-    <style name="MainActionBar" parent="Widget.AppCompat.Light.ActionBar">
-        <item name="android:displayOptions">showTitle|homeAsUp</item>
-    </style>
-
-    <style name="MainActionBarThemeOverlay" parent="">
-        <item name="android:colorControlHighlight">#3fff</item>
-    </style>
 </resources>
