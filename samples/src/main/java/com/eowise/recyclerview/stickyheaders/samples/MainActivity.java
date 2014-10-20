@@ -11,6 +11,7 @@ import android.widget.AdapterView;
 import android.widget.Spinner;
 
 import com.eowise.recyclerview.stickyheaders.HeaderPosition;
+import com.eowise.recyclerview.stickyheaders.StickyHeadersBuilder;
 import com.eowise.recyclerview.stickyheaders.StickyHeadersItemDecoration;
 import com.eowise.recyclerview.stickyheaders.samples.adapters.BigramHeaderAdapter;
 import com.eowise.recyclerview.stickyheaders.samples.adapters.InitialHeaderAdapter;
@@ -45,11 +46,17 @@ public class MainActivity extends ActionBarActivity {
         personDataProvider = new PersonDataProvider();
         personAdapter = new PersonAdapter(personDataProvider);
 
-        top = new StickyHeadersItemDecoration(new BigramHeaderAdapter(personDataProvider.getItems()), list, HeaderPosition.TOP);
-        overlay = new StickyHeadersItemDecoration(new InitialHeaderAdapter(personDataProvider.getItems()), list, HeaderPosition.OVERLAY);
+        top = new StickyHeadersBuilder()
+                .setAdapter(personAdapter)
+                .setRecyclerView(list)
+                .setStickyHeadersAdapter(new BigramHeaderAdapter(personDataProvider.getItems()))
+                .build();
 
-        top.registerAdapterDataObserver(personAdapter);
-        overlay.registerAdapterDataObserver(personAdapter);
+        overlay = new StickyHeadersBuilder()
+                .setAdapter(personAdapter)
+                .setRecyclerView(list)
+                .setStickyHeadersAdapter(new InitialHeaderAdapter(personDataProvider.getItems()), HeaderPosition.OVERLAY)
+                .build();
 
 
         // Inflate a menu to be displayed in the toolbar
