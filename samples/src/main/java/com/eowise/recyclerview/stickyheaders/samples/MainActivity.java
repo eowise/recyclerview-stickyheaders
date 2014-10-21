@@ -12,7 +12,6 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Spinner;
 
-import com.eowise.recyclerview.stickyheaders.HeaderPosition;
 import com.eowise.recyclerview.stickyheaders.StickyHeadersBuilder;
 import com.eowise.recyclerview.stickyheaders.StickyHeadersItemDecoration;
 import com.eowise.recyclerview.stickyheaders.samples.adapters.BigramHeaderAdapter;
@@ -57,7 +56,7 @@ public class MainActivity extends ActionBarActivity {
         overlay = new StickyHeadersBuilder()
                 .setAdapter(personAdapter)
                 .setRecyclerView(list)
-                .setStickyHeadersAdapter(new InitialHeaderAdapter(personDataProvider.getItems()), HeaderPosition.OVERLAY)
+                .setStickyHeadersAdapter(new InitialHeaderAdapter(personDataProvider.getItems()), true)
                 .build();
 
 

@@ -23,18 +23,18 @@ public class StickyHeadersItemDecoration extends RecyclerView.ItemDecoration {
     private final RecyclerView.ViewHolder headerViewHolder;
     private final HashMap<Long, Boolean> headers;
     private final AdapterDataObserver adapterDataObserver;
-    private HeaderPosition headerPosition;
+    private boolean overlay;
     private int headerHeight;
 
     public StickyHeadersItemDecoration(StickyHeadersAdapter adapter, RecyclerView parent) {
-        this(adapter, parent, HeaderPosition.TOP);
+        this(adapter, parent, false);
     }
 
-    public StickyHeadersItemDecoration(StickyHeadersAdapter adapter, RecyclerView parent, HeaderPosition headerPosition) {
+    public StickyHeadersItemDecoration(StickyHeadersAdapter adapter, RecyclerView parent, boolean overlay) {
         this.adapter = adapter;
         this.parent = parent;
         this.headerViewHolder = adapter.onCreateViewHolder(parent);
-        this.headerPosition = headerPosition;
+        this.overlay = overlay;
         this.headers = new HashMap<Long, Boolean>();
         this.adapterDataObserver = new AdapterDataObserver();
         this.headerHeight = NO_HEIGHT;
@@ -61,13 +61,11 @@ public class StickyHeadersItemDecoration extends RecyclerView.ItemDecoration {
 
                 if (i == 0 || isHeader(holder)) {
 
-                    float y = getHeaderY(child, lm.getDecoratedTop(child)) + translationY;
-
+                    float y = getHeaderY(child, lm) + translationY;
 
                     if (lastY != null && lastY < y + headerHeight) {
                         y = lastY - headerHeight;
                     }
-
 
                     adapter.onBindViewHolder(headerViewHolder, position);
 
@@ -90,27 +88,12 @@ public class StickyHeadersItemDecoration extends RecyclerView.ItemDecoration {
         RecyclerView.LayoutParams lp = (RecyclerView.LayoutParams)view.getLayoutParams();
         RecyclerView.ViewHolder holder = parent.getChildViewHolder(view);
 
-        if (!isHeader(holder)) {
+        if (overlay || !isHeader(holder)) {
             outRect.set(0, 0, 0, 0);
         }
         else {
-            switch (headerPosition) {
-                case LEFT:
-                    outRect.set(headerHeight, 0, 0, 0);
-                    break;
-                case TOP:
-                    outRect.set(0, headerHeight, 0, 0);
-                    break;
-                case RIGHT:
-                    outRect.set(0, 0, headerHeight, 0);
-                    break;
-                case BOTTOM:
-                    outRect.set(0, 0, 0, headerHeight);
-                    break;
-                case OVERLAY:
-                    outRect.set(0, 0, 0, 0);
-                    break;
-            }
+            //TODO: Handle layout direction
+            outRect.set(0, headerHeight, 0, 0);
         }
 
         if (lp.isItemRemoved()) {
@@ -122,23 +105,8 @@ public class StickyHeadersItemDecoration extends RecyclerView.ItemDecoration {
         adapter.registerAdapterDataObserver(adapterDataObserver);
     }
 
-    private float getHeaderY(View item, int top) {
-
-        float y;
-        switch (headerPosition) {
-            case TOP:
-                y = top < 0 ? 0 : top;
-                break;
-            case BOTTOM:
-                // TODO: Use getDecoratedBottom
-                y = top + item.getHeight() < headerHeight ? 0 : top + item.getHeight();
-                break;
-            default:
-                y = top < 0 ? 0 : top;
-                break;
-        }
-
-        return y;
+    private float getHeaderY(View item, RecyclerView.LayoutManager lm) {
+        return  lm.getDecoratedTop(item) < 0 ? 0 : lm.getDecoratedTop(item);
     }
 
     private Boolean isHeader(RecyclerView.ViewHolder holder) {

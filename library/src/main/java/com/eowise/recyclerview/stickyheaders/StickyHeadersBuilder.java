@@ -10,7 +10,8 @@ public class StickyHeadersBuilder {
     private RecyclerView recyclerView;
     private RecyclerView.Adapter adapter;
     private StickyHeadersAdapter headersAdapter;
-    private HeaderPosition headerPosition;
+    private boolean overlay;
+
 
     public StickyHeadersBuilder() {
     }
@@ -21,12 +22,12 @@ public class StickyHeadersBuilder {
     }
 
     public StickyHeadersBuilder setStickyHeadersAdapter(StickyHeadersAdapter adapter) {
-        return setStickyHeadersAdapter(adapter, HeaderPosition.TOP);
+        return setStickyHeadersAdapter(adapter, false);
     }
 
-    public StickyHeadersBuilder setStickyHeadersAdapter(StickyHeadersAdapter adapter, HeaderPosition headerPosition) {
+    public StickyHeadersBuilder setStickyHeadersAdapter(StickyHeadersAdapter adapter, boolean overlay) {
         this.headersAdapter = adapter;
-        this.headerPosition = headerPosition;
+        this.overlay = overlay;
         return this;
     }
 
@@ -41,7 +42,7 @@ public class StickyHeadersBuilder {
     public StickyHeadersItemDecoration build() {
 
 
-        StickyHeadersItemDecoration decoration =  new StickyHeadersItemDecoration(headersAdapter, recyclerView, headerPosition);
+        StickyHeadersItemDecoration decoration =  new StickyHeadersItemDecoration(headersAdapter, recyclerView, overlay);
 
         decoration.registerAdapterDataObserver(adapter);
 
