@@ -31,13 +31,15 @@ public class StickyHeadersBuilder {
     }
 
     public StickyHeadersBuilder setAdapter(RecyclerView.Adapter adapter) {
+        if (!adapter.hasStableIds()) {
+            throw new IllegalArgumentException("Adapter must have stable ids");
+        }
         this.adapter = adapter;
         return this;
     }
 
     public StickyHeadersItemDecoration build() {
 
-        // TODO: Throw if adapter doesn't have stables ids
 
         StickyHeadersItemDecoration decoration =  new StickyHeadersItemDecoration(headersAdapter, recyclerView, headerPosition);
 
