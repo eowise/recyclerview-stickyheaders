@@ -20,4 +20,18 @@ android {
         minSdkVersion 7
         targetSdkVersion 21
     }
+
+    signingConfigs {
+        release {
+            storeFile file(releaseStoreFile)
+            keyAlias releaseKeyAlias
+            storePassword releaseStorePassword
+            keyPassword releaseKeyPassword
+        }
+    }
+    buildTypes {
+        release {
+            signingConfig signingConfigs.release
+        }
+    }
 }

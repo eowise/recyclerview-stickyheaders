@@ -1,5 +1,7 @@
 package com.eowise.recyclerview.stickyheaders.samples;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -72,6 +74,12 @@ public class MainActivity extends ActionBarActivity {
                             personAdapter.notifyItemInserted(addedPosition);
                             return true;
                         }
+                        else if (item.getItemId() == R.id.github) {
+                            Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/eowise/recyclerview-stickyheaders/"));
+                            startActivity(browserIntent);
+                            return true;
+                        }
+
                         return false;
                     }
                 }
