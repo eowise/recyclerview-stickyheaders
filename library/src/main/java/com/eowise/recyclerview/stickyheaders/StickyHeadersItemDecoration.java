@@ -128,7 +128,7 @@ public class StickyHeadersItemDecoration extends RecyclerView.ItemDecoration {
     private void ensureHeaderLaidOut() {
         if (headerHeight == NO_HEIGHT) {
             int widthSpec = View.MeasureSpec.makeMeasureSpec(parent.getWidth(), View.MeasureSpec.EXACTLY);
-            int heightSpec = View.MeasureSpec.makeMeasureSpec(ViewGroup.LayoutParams.WRAP_CONTENT, View.MeasureSpec.AT_MOST);
+            int heightSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
             headerViewHolder.itemView.measure(widthSpec, heightSpec);
             headerViewHolder.itemView.layout(0, 0, headerViewHolder.itemView.getMeasuredWidth(), headerViewHolder.itemView.getMeasuredHeight());
             headerHeight = headerViewHolder.itemView.getMeasuredHeight();
