@@ -1,5 +1,6 @@
 ---
 layout: page
+published: true
 ---
 
 # Install
@@ -14,7 +15,7 @@ repositories {
 }
 
 dependencies {
-    compile 'com.eowise:recyclerview-stickyheaders:0.3.0@aar'
+    compile 'com.eowise:recyclerview-stickyheaders:0.4.0@aar'
 }
 {% endhighlight %}
 
@@ -26,7 +27,7 @@ Add the following to your pom.xml:
 <dependency>
     <groupId>com.eowise</groupId>
     <artifactId>recyclerview-stickyheaders</artifactId>
-    <version>0.3.0</version>
+    <version>0.4.0</version>
 </dependency>
 {% endhighlight %}
 
