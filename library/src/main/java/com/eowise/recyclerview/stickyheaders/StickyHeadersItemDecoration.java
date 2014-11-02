@@ -119,6 +119,11 @@ public class StickyHeadersItemDecoration extends RecyclerView.ItemDecoration {
         public void onItemRangeRemoved(int positionStart, int itemCount) {
             headerStore.onItemRangeRemoved(positionStart, itemCount);
         }
+
+        @Override
+        public void onItemRangeInserted(int positionStart, int itemCount) {
+            headerStore.onItemRangeInserted(positionStart, itemCount);
+        }
     }
 
     private class HeaderStore {
@@ -171,6 +176,23 @@ public class StickyHeadersItemDecoration extends RecyclerView.ItemDecoration {
             }
 
             cleanOffScreenItemsIds();
+        }
+
+        public void onItemRangeInserted(int positionStart, int itemCount) {
+            boolean isCleanOffScreenItemsIdsNeeded = false;
+            for (int i = 0; i <= itemCount; i++) {
+                RecyclerView.ViewHolder holder = parent.findViewHolderForPosition(positionStart + i);
+                if (holder != null) {
+                    isHeadersByItemsIds.remove(holder.getItemId());
+                }
+                else {
+                    isCleanOffScreenItemsIdsNeeded = true;
+                }
+            }
+
+            if (isCleanOffScreenItemsIdsNeeded) {
+                cleanOffScreenItemsIds();
+            }
         }
 
         public void clear() {
