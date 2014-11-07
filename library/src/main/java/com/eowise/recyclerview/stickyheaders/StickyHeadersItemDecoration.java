@@ -54,7 +54,7 @@ public class StickyHeadersItemDecoration extends RecyclerView.ItemDecoration {
                 if (i == 0 || headerStore.isHeader(holder)) {
 
                         View header = headerStore.getHeaderViewByItem(holder);
-                        int headerHeight = header.getMeasuredHeight();
+                        int headerHeight = headerStore.getHeaderHeight(holder);
                         float y = getHeaderY(child, lm) + translationY;
 
                         if (lastY != null && lastY < y + headerHeight) {
@@ -84,7 +84,7 @@ public class StickyHeadersItemDecoration extends RecyclerView.ItemDecoration {
         }
         else {
             //TODO: Handle layout direction
-            outRect.set(0, headerStore.getHeaderViewByItem(holder).getMeasuredHeight(), 0, 0);
+            outRect.set(0, headerStore.getHeaderHeight(holder), 0, 0);
         }
     }
 
@@ -130,17 +130,19 @@ public class StickyHeadersItemDecoration extends RecyclerView.ItemDecoration {
 
         private final HashMap<Long, View> headersViewByHeadersIds;
         private final HashMap<Long, Boolean> isHeadersByItemsIds;
+        private final HashMap<Long, Integer> headersHeightsByItemsIds;
 
         public HeaderStore() {
             this.headersViewByHeadersIds = new HashMap<Long, View>();
             this.isHeadersByItemsIds = new HashMap<Long, Boolean>();
+            this.headersHeightsByItemsIds = new HashMap<Long, Integer>();
         }
 
         public View getHeaderViewByItem(RecyclerView.ViewHolder itemHolder) {
             int itemPosition = RecyclerViewHelper.convertPreLayoutPositionToPostLayout(parent, itemHolder.getPosition());
 
             if (itemPosition == -1)
-                itemPosition = itemHolder.getOldPosition();
+                return null;
 
             long headerId = adapter.getHeaderId(itemPosition);
 
@@ -157,6 +159,15 @@ public class StickyHeadersItemDecoration extends RecyclerView.ItemDecoration {
 
         }
 
+        public int getHeaderHeight(RecyclerView.ViewHolder itemHolder) {
+
+            if (!headersHeightsByItemsIds.containsKey(itemHolder.getItemId())) {
+                View header = getHeaderViewByItem(itemHolder);
+                headersHeightsByItemsIds.put(itemHolder.getItemId(), header.getMeasuredHeight());
+            }
+
+            return headersHeightsByItemsIds.get(itemHolder.getItemId());
+        }
 
         public boolean isHeader(RecyclerView.ViewHolder itemHolder) {
 
@@ -173,6 +184,7 @@ public class StickyHeadersItemDecoration extends RecyclerView.ItemDecoration {
             RecyclerView.ViewHolder holder = parent.findViewHolderForPosition(positionStart + itemCount);
             if (holder != null) {
                 isHeadersByItemsIds.remove(holder.getItemId());
+                headersHeightsByItemsIds.remove(holder.getItemId());
             }
 
             cleanOffScreenItemsIds();
@@ -184,6 +196,7 @@ public class StickyHeadersItemDecoration extends RecyclerView.ItemDecoration {
                 RecyclerView.ViewHolder holder = parent.findViewHolderForPosition(positionStart + i);
                 if (holder != null) {
                     isHeadersByItemsIds.remove(holder.getItemId());
+                    headersHeightsByItemsIds.remove(holder.getItemId());
                 }
                 else {
                     isCleanOffScreenItemsIdsNeeded = true;
