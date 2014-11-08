@@ -9,6 +9,7 @@ android {
     compileSdkVersion 21
     buildToolsVersion '21.1.0'
 }
+
 install {
     repositories.mavenInstaller {
         pom.artifactId = 'recyclerview-stickyheaders'
@@ -16,3 +17,7 @@ install {
 }
 
 apply from: 'https://raw.github.com/chrisbanes/gradle-mvn-push/master/gradle-mvn-push.gradle'
+
+afterEvaluate {
+    androidJavadocs.classpath += project.android.libraryVariants.toList().first().javaCompile.classpath
+}
