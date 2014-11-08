@@ -53,13 +53,13 @@ public class MainActivity extends ActionBarActivity {
                 .setStickyHeadersAdapter(new BigramHeaderAdapter(personDataProvider.getItems()))
                 .build();
 
-        /*
+
         overlay = new StickyHeadersBuilder()
                 .setAdapter(personAdapter)
                 .setRecyclerView(list)
                 .setStickyHeadersAdapter(new InitialHeaderAdapter(personDataProvider.getItems()), true)
                 .build();
-        */
+
 
         // Inflate a menu to be displayed in the toolbar
         toolbar.inflateMenu(R.menu.main);

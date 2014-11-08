@@ -196,26 +196,30 @@ public class StickyHeadersItemDecoration extends RecyclerView.ItemDecoration {
 
         public void onItemRangeRemoved(int positionStart, int itemCount) {
 
-            for (int i = 0; i < itemCount; i++) {
-                RecyclerView.ViewHolder holder = parent.findViewHolderForPosition(positionStart + i);
-                if (holder != null) {
-                    wasHeaderByItemId.put(holder.getItemId(),isHeaderByItemPosition.get(positionStart + i ));
-                }
-            }
-
             if (isHeaderByItemPosition.size() > positionStart + itemCount) {
-                isHeaderByItemPosition.set(positionStart + itemCount, null);
-            }
 
-            for (int i = 0; i < itemCount; i++) {
-                isHeaderByItemPosition.remove(positionStart);
+                for (int i = 0; i < itemCount; i++) {
+                    RecyclerView.ViewHolder holder = parent.findViewHolderForPosition(positionStart + i);
+                    if (holder != null) {
+                        wasHeaderByItemId.put(holder.getItemId(), isHeaderByItemPosition.get(positionStart + i));
+                    }
+                }
+
+                isHeaderByItemPosition.set(positionStart + itemCount, null);
+
+                for (int i = 0; i < itemCount; i++) {
+                    isHeaderByItemPosition.remove(positionStart);
+                }
             }
         }
 
         public void onItemRangeInserted(int positionStart, int itemCount) {
-            for (int i = 0; i < itemCount; i++) {
-                isHeaderByItemPosition.add(positionStart, null);
+            if (isHeaderByItemPosition.size() > positionStart) {
+                for (int i = 0; i < itemCount; i++) {
+                    isHeaderByItemPosition.add(positionStart, null);
+                }
             }
+
 
             if (isHeaderByItemPosition.size() > positionStart + itemCount) {
                 isHeaderByItemPosition.set(positionStart + itemCount, null);
