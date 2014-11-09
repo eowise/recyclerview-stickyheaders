@@ -10,6 +10,7 @@ public class StickyHeadersBuilder {
     private RecyclerView recyclerView;
     private RecyclerView.Adapter adapter;
     private StickyHeadersAdapter headersAdapter;
+    private OnHeaderClickListener headerClickListener;
     private boolean overlay;
 
 
@@ -39,12 +40,27 @@ public class StickyHeadersBuilder {
         return this;
     }
 
+    public StickyHeadersBuilder setOnHeaderClickListener(OnHeaderClickListener headerClickListener) {
+        this.headerClickListener = headerClickListener;
+
+        return this;
+    }
+
     public StickyHeadersItemDecoration build() {
 
+        HeaderStore store = new HeaderStore(recyclerView, headersAdapter);
 
-        StickyHeadersItemDecoration decoration =  new StickyHeadersItemDecoration(headersAdapter, recyclerView, overlay);
+        StickyHeadersItemDecoration decoration =  new StickyHeadersItemDecoration(store, overlay);
 
         decoration.registerAdapterDataObserver(adapter);
+
+        if (headerClickListener != null) {
+            StickyHeadersTouchListener touchListener = new StickyHeadersTouchListener(recyclerView, store);
+
+            touchListener.setListener(headerClickListener);
+
+            recyclerView.addOnItemTouchListener(touchListener);
+        }
 
         return decoration;
     }
