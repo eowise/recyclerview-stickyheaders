@@ -14,21 +14,38 @@ public class StickyHeadersItemDecoration extends RecyclerView.ItemDecoration {
     private final HeaderStore headerStore;
     private final AdapterDataObserver adapterDataObserver;
     private boolean overlay;
+    private DrawOrder drawOrder;
 
     public StickyHeadersItemDecoration(HeaderStore headerStore) {
         this(headerStore, false);
     }
 
     public StickyHeadersItemDecoration(HeaderStore headerStore, boolean overlay) {
+        this(headerStore, overlay, DrawOrder.OverItems);
+    }
+
+    public StickyHeadersItemDecoration(HeaderStore headerStore, boolean overlay, DrawOrder drawOrder) {
         this.overlay = overlay;
+        this.drawOrder = drawOrder;
         this.headerStore = headerStore;
         this.adapterDataObserver = new AdapterDataObserver();
     }
 
     @Override
+    public void onDraw(Canvas c, RecyclerView parent, RecyclerView.State state) {
+        if (drawOrder == DrawOrder.UnderItems) {
+            drawHeaders(c, parent, state);
+        }
+    }
+
+    @Override
     public void onDrawOver(Canvas c, RecyclerView parent, RecyclerView.State state) {
+        if (drawOrder == DrawOrder.OverItems) {
+            drawHeaders(c, parent, state);
+        }
+    }
 
-
+    private void drawHeaders(Canvas c, RecyclerView parent, RecyclerView.State state) {
         final int childCount = parent.getChildCount();
         final RecyclerView.LayoutManager lm = parent.getLayoutManager();
         Float lastY = null;
@@ -44,21 +61,21 @@ public class StickyHeadersItemDecoration extends RecyclerView.ItemDecoration {
 
                 if ((i == 0 && headerStore.isSticky()) || headerStore.isHeader(holder)) {
 
-                        View header = headerStore.getHeaderViewByItem(holder);
-                        int headerHeight = headerStore.getHeaderHeight(holder);
-                        float y = getHeaderY(child, lm) + translationY;
+                    View header = headerStore.getHeaderViewByItem(holder);
+                    int headerHeight = headerStore.getHeaderHeight(holder);
+                    float y = getHeaderY(child, lm) + translationY;
 
-                        if (headerStore.isSticky() && lastY != null && lastY < y + headerHeight) {
-                            y = lastY - headerHeight;
-                        }
+                    if (headerStore.isSticky() && lastY != null && lastY < y + headerHeight) {
+                        y = lastY - headerHeight;
+                    }
 
 
-                        c.save();
-                        c.translate(0, y);
-                        header.draw(c);
-                        c.restore();
+                    c.save();
+                    c.translate(0, y);
+                    header.draw(c);
+                    c.restore();
 
-                        lastY = y;
+                    lastY = y;
                 }
             }
         }

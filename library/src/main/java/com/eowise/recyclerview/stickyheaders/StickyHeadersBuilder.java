@@ -13,10 +13,12 @@ public class StickyHeadersBuilder {
     private OnHeaderClickListener headerClickListener;
     private boolean overlay;
     private boolean isSticky;
+    private DrawOrder drawOrder;
 
 
     public StickyHeadersBuilder() {
         this.isSticky = true;
+        this.drawOrder = DrawOrder.OverItems;
     }
 
     public StickyHeadersBuilder setRecyclerView(RecyclerView recyclerView) {
@@ -54,11 +56,17 @@ public class StickyHeadersBuilder {
         return this;
     }
 
+    public StickyHeadersBuilder setDrawOrder(DrawOrder drawOrder) {
+        this.drawOrder = drawOrder;
+
+        return this;
+    }
+
     public StickyHeadersItemDecoration build() {
 
         HeaderStore store = new HeaderStore(recyclerView, headersAdapter, isSticky);
 
-        StickyHeadersItemDecoration decoration =  new StickyHeadersItemDecoration(store, overlay);
+        StickyHeadersItemDecoration decoration =  new StickyHeadersItemDecoration(store, overlay, drawOrder);
 
         decoration.registerAdapterDataObserver(adapter);
 
