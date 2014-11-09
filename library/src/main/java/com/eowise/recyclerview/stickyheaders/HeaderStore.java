@@ -70,6 +70,11 @@ public class HeaderStore {
 
     public boolean isHeader(RecyclerView.ViewHolder itemHolder) {
         int itemPosition = RecyclerViewHelper.convertPreLayoutPositionToPostLayout(parent, itemHolder.getPosition());
+        if (isHeaderByItemPosition.size() < itemPosition) {
+            for (int i = 0; i < itemPosition; i++) {
+                isHeaderByItemPosition.add(null);
+            }
+        }
         if (isHeaderByItemPosition.size() <= itemPosition) {
             isHeaderByItemPosition.add(itemPosition, itemPosition == 0 || adapter.getHeaderId(itemPosition) != adapter.getHeaderId(itemPosition - 1));
         }
