@@ -71,7 +71,7 @@ public class StickyHeadersTouchListener implements RecyclerView.OnItemTouchListe
 
             View firstItem = parent.getChildAt(0);
 
-            if (y < firstItem.getBottom()) {
+            if (headerStore.isSticky() && y < firstItem.getBottom()) {
                 return parent.getChildViewHolder(firstItem);
             }
 

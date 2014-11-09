@@ -42,13 +42,13 @@ public class StickyHeadersItemDecoration extends RecyclerView.ItemDecoration {
 
                 float translationY = ViewCompat.getTranslationY(child);
 
-                if (i == 0 || headerStore.isHeader(holder)) {
+                if ((i == 0 && headerStore.isSticky()) || headerStore.isHeader(holder)) {
 
                         View header = headerStore.getHeaderViewByItem(holder);
                         int headerHeight = headerStore.getHeaderHeight(holder);
                         float y = getHeaderY(child, lm) + translationY;
 
-                        if (lastY != null && lastY < y + headerHeight) {
+                        if (headerStore.isSticky() && lastY != null && lastY < y + headerHeight) {
                             y = lastY - headerHeight;
                         }
 
@@ -86,7 +86,7 @@ public class StickyHeadersItemDecoration extends RecyclerView.ItemDecoration {
     }
 
     private float getHeaderY(View item, RecyclerView.LayoutManager lm) {
-        return  lm.getDecoratedTop(item) < 0 ? 0 : lm.getDecoratedTop(item);
+        return  headerStore.isSticky() && lm.getDecoratedTop(item) < 0 ? 0 : lm.getDecoratedTop(item);
     }
 
 

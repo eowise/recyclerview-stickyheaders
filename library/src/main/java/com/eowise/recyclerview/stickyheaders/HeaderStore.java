@@ -20,10 +20,13 @@ public class HeaderStore {
     private final HashMap<Long, Boolean> wasHeaderByItemId;
     private final ArrayList<Boolean> isHeaderByItemPosition;
     private final HashMap<Long, Integer> headersHeightsByItemsIds;
+    private boolean isSticky;
 
-    public HeaderStore(RecyclerView parent, StickyHeadersAdapter adapter) {
+
+    public HeaderStore(RecyclerView parent, StickyHeadersAdapter adapter, boolean isSticky) {
         this.parent = parent;
         this.adapter = adapter;
+        this.isSticky = isSticky;
         this.headersViewByHeadersIds = new HashMap<Long, View>();
         this.wasHeaderByItemId = new HashMap<Long, Boolean>();
         this.isHeaderByItemPosition = new ArrayList<Boolean>();
@@ -88,6 +91,10 @@ public class HeaderStore {
             wasHeaderByItemId.put(itemHolder.getItemId(), itemPosition == 0 || adapter.getHeaderId(itemPosition) != adapter.getHeaderId(itemPosition - 1));
         }
         return wasHeaderByItemId.get(itemHolder.getItemId());
+    }
+
+    public boolean isSticky() {
+        return isSticky;
     }
 
     public void onItemRangeRemoved(int positionStart, int itemCount) {

@@ -12,9 +12,11 @@ public class StickyHeadersBuilder {
     private StickyHeadersAdapter headersAdapter;
     private OnHeaderClickListener headerClickListener;
     private boolean overlay;
+    private boolean isSticky;
 
 
     public StickyHeadersBuilder() {
+        this.isSticky = true;
     }
 
     public StickyHeadersBuilder setRecyclerView(RecyclerView recyclerView) {
@@ -46,9 +48,15 @@ public class StickyHeadersBuilder {
         return this;
     }
 
+    public StickyHeadersBuilder setSticky(boolean isSticky) {
+        this.isSticky = isSticky;
+
+        return this;
+    }
+
     public StickyHeadersItemDecoration build() {
 
-        HeaderStore store = new HeaderStore(recyclerView, headersAdapter);
+        HeaderStore store = new HeaderStore(recyclerView, headersAdapter, isSticky);
 
         StickyHeadersItemDecoration decoration =  new StickyHeadersItemDecoration(store, overlay);
 
