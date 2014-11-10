@@ -3,34 +3,6 @@ layout: page
 published: true
 ---
 
-# Install
-
-## Using Gradle
-
-Add the following to your build.gradle:
-
-{% highlight groovy %}
-repositories {
-    mavenCentral()
-}
-
-dependencies {
-    compile 'com.eowise:recyclerview-stickyheaders:0.4.3@aar'
-}
-{% endhighlight %}
-
-## Using Maven
-
-Add the following to your pom.xml:
-
-{% highlight xml %}
-<dependency>
-    <groupId>com.eowise</groupId>
-    <artifactId>recyclerview-stickyheaders</artifactId>
-    <version>0.4.3</version>
-</dependency>
-{% endhighlight %}
-
 # Usage
 
 Recyclerview-stickyheaders add sticky headers feature to a `RecyclerView` with a specific `ItemDecoration`. You will also need to create a layout for the header (or create views by code) and implement the `StickyHeadersAdapter` interface.
@@ -83,7 +55,7 @@ protected void onCreate(Bundle savedInstanceState) {
 
   list.setAdapter(personAdapter);
   list.setLayoutManager(new LinearLayoutManager(MainActivity.this, LinearLayoutManager.VERTICAL, false));
-  
+
   // Build item decoration and add it to the RecyclerView
   StickyHeadersItemDecoration decoration = new StickyHeadersBuilder()
       .setAdapter(personAdapter)

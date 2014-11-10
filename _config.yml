@@ -5,8 +5,6 @@ title: "recyclerview-stickyheaders"
 # This is used by feed.xml. Uncomment if you want to use it.
 # description: "..."
 
-gems:
-  - jemoji
 exclude:
   - "README.md"
   - "CHANGELOG.md"
