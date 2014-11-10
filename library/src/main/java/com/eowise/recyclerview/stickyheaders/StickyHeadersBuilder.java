@@ -10,10 +10,15 @@ public class StickyHeadersBuilder {
     private RecyclerView recyclerView;
     private RecyclerView.Adapter adapter;
     private StickyHeadersAdapter headersAdapter;
+    private OnHeaderClickListener headerClickListener;
     private boolean overlay;
+    private boolean isSticky;
+    private DrawOrder drawOrder;
 
 
     public StickyHeadersBuilder() {
+        this.isSticky = true;
+        this.drawOrder = DrawOrder.OverItems;
     }
 
     public StickyHeadersBuilder setRecyclerView(RecyclerView recyclerView) {
@@ -39,12 +44,39 @@ public class StickyHeadersBuilder {
         return this;
     }
 
+    public StickyHeadersBuilder setOnHeaderClickListener(OnHeaderClickListener headerClickListener) {
+        this.headerClickListener = headerClickListener;
+
+        return this;
+    }
+
+    public StickyHeadersBuilder setSticky(boolean isSticky) {
+        this.isSticky = isSticky;
+
+        return this;
+    }
+
+    public StickyHeadersBuilder setDrawOrder(DrawOrder drawOrder) {
+        this.drawOrder = drawOrder;
+
+        return this;
+    }
+
     public StickyHeadersItemDecoration build() {
 
+        HeaderStore store = new HeaderStore(recyclerView, headersAdapter, isSticky);
 
-        StickyHeadersItemDecoration decoration =  new StickyHeadersItemDecoration(headersAdapter, recyclerView, overlay);
+        StickyHeadersItemDecoration decoration =  new StickyHeadersItemDecoration(store, overlay, drawOrder);
 
         decoration.registerAdapterDataObserver(adapter);
+
+        if (headerClickListener != null) {
+            StickyHeadersTouchListener touchListener = new StickyHeadersTouchListener(recyclerView, store);
+
+            touchListener.setListener(headerClickListener);
+
+            recyclerView.addOnItemTouchListener(touchListener);
+        }
 
         return decoration;
     }

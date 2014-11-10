@@ -11,7 +11,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Spinner;
+import android.widget.TextView;
+import android.widget.Toast;
 
+import com.eowise.recyclerview.stickyheaders.OnHeaderClickListener;
 import com.eowise.recyclerview.stickyheaders.StickyHeadersBuilder;
 import com.eowise.recyclerview.stickyheaders.StickyHeadersItemDecoration;
 import com.eowise.recyclerview.stickyheaders.samples.adapters.BigramHeaderAdapter;
@@ -22,7 +25,7 @@ import com.eowise.recyclerview.stickyheaders.samples.data.PersonDataProvider;
 /**
  * Created by aurel on 22/09/14.
  */
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends ActionBarActivity implements OnHeaderClickListener {
 
     private Toolbar toolbar;
     private RecyclerView list;
@@ -51,7 +54,9 @@ public class MainActivity extends ActionBarActivity {
                 .setAdapter(personAdapter)
                 .setRecyclerView(list)
                 .setStickyHeadersAdapter(new BigramHeaderAdapter(personDataProvider.getItems()))
+                .setOnHeaderClickListener(this)
                 .build();
+
 
         overlay = new StickyHeadersBuilder()
                 .setAdapter(personAdapter)
@@ -107,4 +112,9 @@ public class MainActivity extends ActionBarActivity {
 
     }
 
+    @Override
+    public void onHeaderClick(View header, long headerId) {
+        TextView text = (TextView)header.findViewById(R.id.title);
+        Toast.makeText(getApplicationContext(), "Click on " + text.getText(), Toast.LENGTH_SHORT).show();
+    }
 }

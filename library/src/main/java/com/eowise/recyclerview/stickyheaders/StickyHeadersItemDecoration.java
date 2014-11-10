@@ -4,40 +4,48 @@ import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.RecyclerViewHelper;
 import android.view.View;
-import android.view.ViewGroup;
-
-import java.util.HashMap;
-import java.util.Iterator;
 
 /**
  * Created by aurel on 22/09/14.
  */
 public class StickyHeadersItemDecoration extends RecyclerView.ItemDecoration {
 
-    private final StickyHeadersAdapter adapter;
-    private final RecyclerView parent;
     private final HeaderStore headerStore;
     private final AdapterDataObserver adapterDataObserver;
     private boolean overlay;
+    private DrawOrder drawOrder;
 
-    public StickyHeadersItemDecoration(StickyHeadersAdapter adapter, RecyclerView parent) {
-        this(adapter, parent, false);
+    public StickyHeadersItemDecoration(HeaderStore headerStore) {
+        this(headerStore, false);
     }
 
-    public StickyHeadersItemDecoration(StickyHeadersAdapter adapter, RecyclerView parent, boolean overlay) {
-        this.adapter = adapter;
-        this.parent = parent;
+    public StickyHeadersItemDecoration(HeaderStore headerStore, boolean overlay) {
+        this(headerStore, overlay, DrawOrder.OverItems);
+    }
+
+    public StickyHeadersItemDecoration(HeaderStore headerStore, boolean overlay, DrawOrder drawOrder) {
         this.overlay = overlay;
-        this.headerStore = new HeaderStore();
+        this.drawOrder = drawOrder;
+        this.headerStore = headerStore;
         this.adapterDataObserver = new AdapterDataObserver();
     }
 
     @Override
+    public void onDraw(Canvas c, RecyclerView parent, RecyclerView.State state) {
+        if (drawOrder == DrawOrder.UnderItems) {
+            drawHeaders(c, parent, state);
+        }
+    }
+
+    @Override
     public void onDrawOver(Canvas c, RecyclerView parent, RecyclerView.State state) {
+        if (drawOrder == DrawOrder.OverItems) {
+            drawHeaders(c, parent, state);
+        }
+    }
 
-
+    private void drawHeaders(Canvas c, RecyclerView parent, RecyclerView.State state) {
         final int childCount = parent.getChildCount();
         final RecyclerView.LayoutManager lm = parent.getLayoutManager();
         Float lastY = null;
@@ -51,23 +59,23 @@ public class StickyHeadersItemDecoration extends RecyclerView.ItemDecoration {
 
                 float translationY = ViewCompat.getTranslationY(child);
 
-                if (i == 0 || headerStore.isHeader(holder)) {
+                if ((i == 0 && headerStore.isSticky()) || headerStore.isHeader(holder)) {
 
-                        View header = headerStore.getHeaderViewByItem(holder);
-                        int headerHeight = header.getMeasuredHeight();
-                        float y = getHeaderY(child, lm) + translationY;
+                    View header = headerStore.getHeaderViewByItem(holder);
+                    int headerHeight = headerStore.getHeaderHeight(holder);
+                    float y = getHeaderY(child, lm) + translationY;
 
-                        if (lastY != null && lastY < y + headerHeight) {
-                            y = lastY - headerHeight;
-                        }
+                    if (headerStore.isSticky() && lastY != null && lastY < y + headerHeight) {
+                        y = lastY - headerHeight;
+                    }
 
 
-                        c.save();
-                        c.translate(0, y);
-                        header.draw(c);
-                        c.restore();
+                    c.save();
+                    c.translate(0, y);
+                    header.draw(c);
+                    c.restore();
 
-                        lastY = y;
+                    lastY = y;
                 }
             }
         }
@@ -78,13 +86,15 @@ public class StickyHeadersItemDecoration extends RecyclerView.ItemDecoration {
 
         RecyclerView.LayoutParams lp = (RecyclerView.LayoutParams)view.getLayoutParams();
         RecyclerView.ViewHolder holder = parent.getChildViewHolder(view);
+        boolean isHeader = lp.isItemRemoved() ? headerStore.wasHeader(holder) : headerStore.isHeader(holder);
 
-        if (overlay || !headerStore.isHeader(holder)) {
+
+        if (overlay || !isHeader) {
             outRect.set(0, 0, 0, 0);
         }
         else {
             //TODO: Handle layout direction
-            outRect.set(0, headerStore.getHeaderViewByItem(holder).getMeasuredHeight(), 0, 0);
+            outRect.set(0, headerStore.getHeaderHeight(holder), 0, 0);
         }
     }
 
@@ -93,15 +103,7 @@ public class StickyHeadersItemDecoration extends RecyclerView.ItemDecoration {
     }
 
     private float getHeaderY(View item, RecyclerView.LayoutManager lm) {
-        return  lm.getDecoratedTop(item) < 0 ? 0 : lm.getDecoratedTop(item);
-    }
-
-
-    private void layoutHeader(View header) {
-        int widthSpec = View.MeasureSpec.makeMeasureSpec(parent.getWidth(), View.MeasureSpec.EXACTLY);
-        int heightSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
-        header.measure(widthSpec, heightSpec);
-        header.layout(0, 0, header.getMeasuredWidth(), header.getMeasuredHeight());
+        return  headerStore.isSticky() && lm.getDecoratedTop(item) < 0 ? 0 : lm.getDecoratedTop(item);
     }
 
 
@@ -126,88 +128,4 @@ public class StickyHeadersItemDecoration extends RecyclerView.ItemDecoration {
         }
     }
 
-    private class HeaderStore {
-
-        private final HashMap<Long, View> headersViewByHeadersIds;
-        private final HashMap<Long, Boolean> isHeadersByItemsIds;
-
-        public HeaderStore() {
-            this.headersViewByHeadersIds = new HashMap<Long, View>();
-            this.isHeadersByItemsIds = new HashMap<Long, Boolean>();
-        }
-
-        public View getHeaderViewByItem(RecyclerView.ViewHolder itemHolder) {
-            int itemPosition = RecyclerViewHelper.convertPreLayoutPositionToPostLayout(parent, itemHolder.getPosition());
-
-            if (itemPosition == -1)
-                itemPosition = itemHolder.getOldPosition();
-
-            long headerId = adapter.getHeaderId(itemPosition);
-
-            if (!headersViewByHeadersIds.containsKey(headerId)) {
-                RecyclerView.ViewHolder headerViewHolder = adapter.onCreateViewHolder(parent);
-
-                adapter.onBindViewHolder(headerViewHolder, itemPosition);
-                layoutHeader(headerViewHolder.itemView);
-
-                headersViewByHeadersIds.put(headerId, headerViewHolder.itemView);
-            }
-
-            return headersViewByHeadersIds.get(headerId);
-
-        }
-
-
-        public boolean isHeader(RecyclerView.ViewHolder itemHolder) {
-
-            if (!isHeadersByItemsIds.containsKey(itemHolder.getItemId())) {
-                int itemPosition = RecyclerViewHelper.convertPreLayoutPositionToPostLayout(parent, itemHolder.getPosition());
-
-                isHeadersByItemsIds.put(itemHolder.getItemId(), itemPosition == 0 || adapter.getHeaderId(itemPosition) != adapter.getHeaderId(itemPosition - 1));
-            }
-
-            return isHeadersByItemsIds.get(itemHolder.getItemId());
-        }
-
-        public void onItemRangeRemoved(int positionStart, int itemCount) {
-            RecyclerView.ViewHolder holder = parent.findViewHolderForPosition(positionStart + itemCount);
-            if (holder != null) {
-                isHeadersByItemsIds.remove(holder.getItemId());
-            }
-
-            cleanOffScreenItemsIds();
-        }
-
-        public void onItemRangeInserted(int positionStart, int itemCount) {
-            boolean isCleanOffScreenItemsIdsNeeded = false;
-            for (int i = 0; i <= itemCount; i++) {
-                RecyclerView.ViewHolder holder = parent.findViewHolderForPosition(positionStart + i);
-                if (holder != null) {
-                    isHeadersByItemsIds.remove(holder.getItemId());
-                }
-                else {
-                    isCleanOffScreenItemsIdsNeeded = true;
-                }
-            }
-
-            if (isCleanOffScreenItemsIdsNeeded) {
-                cleanOffScreenItemsIds();
-            }
-        }
-
-        public void clear() {
-            headersViewByHeadersIds.clear();
-            isHeadersByItemsIds.clear();
-        }
-
-        private void cleanOffScreenItemsIds() {
-            Iterator<Long> iterator = isHeadersByItemsIds.keySet().iterator();
-            while (iterator.hasNext()) {
-                long itemId = iterator.next();
-                if (parent.findViewHolderForItemId(itemId) == null) {
-                    iterator.remove();
-                }
-            }
-        }
-    }
 }
