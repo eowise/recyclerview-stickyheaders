@@ -61,7 +61,7 @@ protected void onCreate(Bundle savedInstanceState) {
       .setAdapter(personAdapter)
       .setRecyclerView(list)
       .setStickyHeadersAdapter(
-          new InitialHeaderAdapter(), // Class witch implements StickyHeadersAdapter
+          new InitialHeaderAdapter(), // Class that implements StickyHeadersAdapter
           HeaderPosition.OVERLAY)     // Decoration position relative to a item
       .build();
 
