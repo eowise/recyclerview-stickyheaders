@@ -65,7 +65,7 @@ protected void onCreate(Bundle savedInstanceState) {
           HeaderPosition.OVERLAY)     // Decoration position relative to a item
       .build();
 
-  list.addItemDecoration(list);
+  list.addItemDecoration(decoration);
 }
 {% endhighlight %}
 
