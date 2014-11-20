@@ -55,7 +55,7 @@ public class StickyHeadersItemDecoration extends RecyclerView.ItemDecoration {
             RecyclerView.LayoutParams lp = (RecyclerView.LayoutParams)child.getLayoutParams();
             RecyclerView.ViewHolder holder = parent.getChildViewHolder(child);
 
-            if (!lp.isItemRemoved()) {
+            if (!lp.isItemRemoved() && !lp.isViewInvalid()) {
 
                 float translationY = ViewCompat.getTranslationY(child);
 
