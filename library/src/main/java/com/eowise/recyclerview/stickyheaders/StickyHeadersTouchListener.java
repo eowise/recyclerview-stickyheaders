@@ -43,6 +43,11 @@ public class StickyHeadersTouchListener implements RecyclerView.OnItemTouchListe
         }
 
         @Override
+        public boolean onSingleTapUp(MotionEvent e) {
+            return findItemHolderUnder(e.getX(), e.getY()) != null;
+        }
+
+        @Override
         public boolean onSingleTapConfirmed(MotionEvent e) {
 
             RecyclerView.ViewHolder holder = findItemHolderUnder(e.getX(), e.getY());
