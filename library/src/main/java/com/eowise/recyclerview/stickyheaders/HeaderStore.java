@@ -100,40 +100,40 @@ public class HeaderStore {
         return isSticky;
     }
 
-  public void onItemRangeRemoved(int positionStart, int itemCount) {
-    headersViewByHeadersIds.clear();
+    public void onItemRangeRemoved(int positionStart, int itemCount) {
+        headersViewByHeadersIds.clear();
 
-    if (isHeaderByItemPosition.size() > positionStart + itemCount) {
+        if (isHeaderByItemPosition.size() > positionStart + itemCount) {
 
-      for (int i = 0; i < itemCount; i++) {
-        RecyclerView.ViewHolder holder = parent.findViewHolderForPosition(positionStart + i);
-        if (holder != null) {
-          wasHeaderByItemId.put(holder.getItemId(), isHeaderByItemPosition.get(positionStart + i));
+            for (int i = 0; i < itemCount; i++) {
+                RecyclerView.ViewHolder holder = parent.findViewHolderForPosition(positionStart + i);
+                if (holder != null) {
+                    wasHeaderByItemId.put(holder.getItemId(), isHeaderByItemPosition.get(positionStart + i));
+                }
+            }
+
+            isHeaderByItemPosition.set(positionStart + itemCount, null);
+
+            for (int i = 0; i < itemCount; i++) {
+                isHeaderByItemPosition.remove(positionStart);
+            }
         }
-      }
-
-      isHeaderByItemPosition.set(positionStart + itemCount, null);
-
-      for (int i = 0; i < itemCount; i++) {
-        isHeaderByItemPosition.remove(positionStart);
-      }
-    }
-  }
-
-  public void onItemRangeInserted(int positionStart, int itemCount) {
-    headersViewByHeadersIds.clear();
-
-    if (isHeaderByItemPosition.size() > positionStart) {
-      for (int i = 0; i < itemCount; i++) {
-        isHeaderByItemPosition.add(positionStart, null);
-      }
     }
 
+    public void onItemRangeInserted(int positionStart, int itemCount) {
+        headersViewByHeadersIds.clear();
 
-    if (isHeaderByItemPosition.size() > positionStart + itemCount) {
-      isHeaderByItemPosition.set(positionStart + itemCount, null);
+        if (isHeaderByItemPosition.size() > positionStart) {
+            for (int i = 0; i < itemCount; i++) {
+                isHeaderByItemPosition.add(positionStart, null);
+            }
+        }
+
+
+        if (isHeaderByItemPosition.size() > positionStart + itemCount) {
+            isHeaderByItemPosition.set(positionStart + itemCount, null);
+        }
     }
-  }
 
     public void onItemRangeMoved(int fromPosition, int toPosition, int itemCount) {
         headersViewByHeadersIds.clear();
