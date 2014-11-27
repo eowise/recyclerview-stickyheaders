@@ -55,7 +55,7 @@ public class PersonAdapter extends RecyclerView.Adapter<PersonAdapter.ViewHolder
         notifyItemRemoved(position);
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnLongClickListener {
+    public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         TextView label;
         private OnRemoveListener listener;
@@ -65,13 +65,13 @@ public class PersonAdapter extends RecyclerView.Adapter<PersonAdapter.ViewHolder
             this.label = (TextView) itemView.findViewById(R.id.name);
             this.listener = listener;
 
-            itemView.setOnLongClickListener(this);
+            itemView.setOnClickListener(this);
         }
 
+
         @Override
-        public boolean onLongClick(View v) {
+        public void onClick(View v) {
             listener.onRemove(getPosition());
-            return true;
         }
     }
 
