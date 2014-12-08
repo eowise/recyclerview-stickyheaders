@@ -60,7 +60,7 @@ public class HeaderStore {
 
         if (!headersHeightsByItemsIds.containsKey(itemHolder.getItemId())) {
             View header = getHeaderViewByItem(itemHolder);
-            headersHeightsByItemsIds.put(itemHolder.getItemId(), header.getMeasuredHeight());
+            headersHeightsByItemsIds.put(itemHolder.getItemId(), header.getVisibility() == View.GONE ? 0 : header.getMeasuredHeight());
         }
 
         return headersHeightsByItemsIds.get(itemHolder.getItemId());
