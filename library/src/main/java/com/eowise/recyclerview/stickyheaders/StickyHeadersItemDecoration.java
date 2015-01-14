@@ -68,9 +68,7 @@ public class StickyHeadersItemDecoration extends RecyclerView.ItemDecoration {
                         int headerHeight = headerStore.getHeaderHeight(holder);
                         float y = getHeaderY(child, lm) + translationY;
 
-                        if (headerStore.isHeader(holder) && i == 0) {
-                            y = 0;
-                        } else if (headerStore.isSticky() && lastY != null && lastY < y + headerHeight) {
+                        if (headerStore.isSticky() && lastY != null && lastY < y + headerHeight) {
                             y = lastY - headerHeight;
                         }
 
