@@ -55,27 +55,30 @@ public class StickyHeadersItemDecoration extends RecyclerView.ItemDecoration {
             RecyclerView.LayoutParams lp = (RecyclerView.LayoutParams)child.getLayoutParams();
             RecyclerView.ViewHolder holder = parent.getChildViewHolder(child);
 
-            if (!lp.isItemRemoved()) {
+            if (!lp.isItemRemoved() && !lp.isViewInvalid()) {
 
                 float translationY = ViewCompat.getTranslationY(child);
 
                 if ((i == 0 && headerStore.isSticky()) || headerStore.isHeader(holder)) {
 
                     View header = headerStore.getHeaderViewByItem(holder);
-                    int headerHeight = headerStore.getHeaderHeight(holder);
-                    float y = getHeaderY(child, lm) + translationY;
 
-                    if (headerStore.isSticky() && lastY != null && lastY < y + headerHeight) {
-                        y = lastY - headerHeight;
+                    if (header.getVisibility() == View.VISIBLE) {
+
+                        int headerHeight = headerStore.getHeaderHeight(holder);
+                        float y = getHeaderY(child, lm) + translationY;
+
+                        if (headerStore.isSticky() && lastY != null && lastY < y + headerHeight) {
+                            y = lastY - headerHeight;
+                        }
+
+                        c.save();
+                        c.translate(0, y);
+                        header.draw(c);
+                        c.restore();
+
+                        lastY = y;
                     }
-
-
-                    c.save();
-                    c.translate(0, y);
-                    header.draw(c);
-                    c.restore();
-
-                    lastY = y;
                 }
             }
         }
@@ -126,6 +129,16 @@ public class StickyHeadersItemDecoration extends RecyclerView.ItemDecoration {
         public void onItemRangeInserted(int positionStart, int itemCount) {
             headerStore.onItemRangeInserted(positionStart, itemCount);
         }
+
+        @Override
+        public void onItemRangeMoved(int fromPosition, int toPosition, int itemCount) {
+            headerStore.onItemRangeMoved(fromPosition, toPosition, itemCount);
+        }
+
+      @Override
+      public void onItemRangeChanged(int positionStart, int itemCount) {
+            headerStore.onItemRangeChanged(positionStart, itemCount);
+      }
     }
 
 }
