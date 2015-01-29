@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Sticky headers Samples</string>
+    <string name="edit">Edit</string>
 
     <string-array name="samples">
         <item>Top</item>

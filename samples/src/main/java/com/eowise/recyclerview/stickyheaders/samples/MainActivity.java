@@ -48,7 +48,7 @@ public class MainActivity extends ActionBarActivity implements OnHeaderClickList
         list.setLayoutManager(new LinearLayoutManager(MainActivity.this, LinearLayoutManager.VERTICAL, false));
 
         personDataProvider = new PersonDataProvider();
-        personAdapter = new PersonAdapter(personDataProvider);
+        personAdapter = new PersonAdapter(this, personDataProvider);
 
         top = new StickyHeadersBuilder()
                 .setAdapter(personAdapter)
