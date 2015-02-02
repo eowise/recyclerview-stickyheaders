@@ -67,6 +67,7 @@ public class PersonAdapter extends RecyclerView.Adapter<PersonAdapter.ViewHolder
     public void onEdit(final int position) {
         final EditText edit = new EditText(mContext);
         edit.setTextColor(Color.BLACK);
+        edit.setText(personDataProvider.getItems().get(position));
         new AlertDialog.Builder(mContext).setTitle(R.string.edit).setView(edit).setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
