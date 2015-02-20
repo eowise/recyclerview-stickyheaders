@@ -68,15 +68,13 @@ public class HeaderStore {
 
     public boolean isHeader(RecyclerView.ViewHolder itemHolder) {
         int itemPosition = RecyclerViewHelper.convertPreLayoutPositionToPostLayout(parent, itemHolder.getPosition());
-        if (isHeaderByItemPosition.size() < itemPosition) {
-            for (int i = 0; i < itemPosition; i++) {
+        if (isHeaderByItemPosition.size() <= itemPosition) {
+            isHeaderByItemPosition.ensureCapacity(itemPosition + 1);
+            for (int i = isHeaderByItemPosition.size(); i <= itemPosition; i++) {
                 isHeaderByItemPosition.add(null);
             }
         }
-        if (isHeaderByItemPosition.size() <= itemPosition) {
-            isHeaderByItemPosition.add(itemPosition, itemPosition == 0 || adapter.getHeaderId(itemPosition) != adapter.getHeaderId(itemPosition - 1));
-        }
-        else if (isHeaderByItemPosition.get(itemPosition) == null) {
+        if (isHeaderByItemPosition.get(itemPosition) == null) {
             isHeaderByItemPosition.set(itemPosition, itemPosition == 0 || adapter.getHeaderId(itemPosition) != adapter.getHeaderId(itemPosition - 1));
         }
 
@@ -222,7 +220,7 @@ public class HeaderStore {
         long startPositionId = adapter.getHeaderId(startPosition);
         if(startPosition > 0) {
             long beforeStartPositionId = adapter.getHeaderId(startPosition - 1);
-            isHeaderByItemPosition.set(startPosition - 1, startPositionId != beforeStartPositionId);
+            isHeaderByItemPosition.set(startPosition, startPositionId != beforeStartPositionId);
         }
         if(startPosition + itemCount < isHeaderByItemPosition.size()) {
             long afterStartPositionId = adapter.getHeaderId(startPosition + itemCount);
